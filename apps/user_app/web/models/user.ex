@@ -9,12 +9,33 @@ defmodule UserApp.User do
     timestamps()
   end
 
-  @doc """
-  Builds a changeset based on the `struct` and `params`.
-  """
-  def changeset(struct, params \\ %{}) do
+  def registration_changeset(struct, params) do
     struct
-    |> cast(params, [:username, :password, :password_hash])
-    |> validate_required([:username, :password, :password_hash])
+    |> changeset(params)
+    |> put_hashed_password
+  end
+
+  def changeset(struct, params \\ :empty) do
+    struct
+    |> cast(params, [:username, :password])
+    |> validate_user
+  end
+
+  defp put_hashed_password(changeset) do
+    case changeset do
+      %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
+        put_change(changeset, :password_hash, Comeonin.Bcrypt.hashpwsalt(pass))
+
+      _ ->
+        changeset
+    end
+  end
+
+  defp validate_user(changeset) do
+    changeset
+    |> validate_required([:username, :password])
+    |> unique_constraint(:username)
+    |> validate_length(:username, min: 3, max: 20)
+    |> validate_length(:password, min: 6, max: 20)
   end
 end
