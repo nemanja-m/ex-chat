@@ -7,5 +7,7 @@ defmodule UserApp.Router do
 
   scope "/api", UserApp do
     pipe_through :api
+
+    resources "/users", UserController
   end
 end
