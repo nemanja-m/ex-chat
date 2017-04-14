@@ -9,11 +9,15 @@ config :user_app, UserApp.Endpoint,
 # Print only warnings and errors during test
 config :logger, level: :warn
 
+# Confgure postgres db
+db_username = System.get_env("DATABASE_POSTGRESQL_USERNAME") || "developer"
+db_password = System.get_env("DATABASE_POSTGRESQL_PASSWORD") || "developer"
+
 # Configure your database
 config :user_app, UserApp.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "developer",
-  password: "developer",
+  username: db_username,
+  password: db_password,
   database: "user_app_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
