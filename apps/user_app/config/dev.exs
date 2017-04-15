@@ -13,6 +13,8 @@ config :user_app, UserApp.Endpoint,
   check_origin: false,
   watchers: []
 
+config :guardian, Guardian,
+  secret_key: "DuWKWhfeBuho78bfbBTz/Hl4/LfcR+2bzoiy9A1SC/JjBNPlMXbn9QCqK1JhaTRz"
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
