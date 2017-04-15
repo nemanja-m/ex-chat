@@ -26,6 +26,7 @@ defmodule UserApp.ConnCase do
       import Ecto.Query
 
       import UserApp.Router.Helpers
+      import UserApp.RepoHelpers
 
       # The default endpoint for testing
       @endpoint UserApp.Endpoint
