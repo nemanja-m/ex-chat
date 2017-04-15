@@ -14,25 +14,29 @@ defmodule UserApp.UserControllerTest do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
-  test "lists all entries on index", %{conn: conn} do
+  test "lists all users on index", %{conn: conn} do
     conn = get conn, user_path(conn, :index)
+
     assert json_response(conn, 200)["data"] == []
   end
 
-  test "creates and renders resource when data is valid", %{conn: conn} do
+  test "creates and renders user when data is valid", %{conn: conn} do
     conn = post conn, user_path(conn, :create), user: @valid_attrs
+
     assert json_response(conn, 201)["data"]["id"]
     assert Repo.get_by(User, %{username: "john"})
   end
 
-  test "does not create resource and renders errors when data is invalid", %{conn: conn} do
+  test "does not create user and renders errors when data is invalid", %{conn: conn} do
     conn = post conn, user_path(conn, :create), user: @invalid_attrs
+
     assert json_response(conn, 422)["errors"] != %{}
   end
 
-  test "deletes chosen resource", %{conn: conn} do
-    user = Repo.insert! %User{username: "john", password: "johndoe"}
+  test "deletes user", %{conn: conn} do
+    user = insert_user %{username: "john", password: "johndoe"}
     conn = delete conn, user_path(conn, :delete, user)
+
     assert response(conn, 204)
     refute Repo.get(User, user.id)
   end
