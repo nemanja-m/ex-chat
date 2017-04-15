@@ -8,6 +8,8 @@ defmodule UserApp.Router do
   scope "/api", UserApp do
     pipe_through :api
 
-    resources "/users", UserController
+    get    "/users",          UserController, :index
+    post   "/users/register", UserController, :create
+    delete "/users/:id",      UserController, :delete
   end
 end
