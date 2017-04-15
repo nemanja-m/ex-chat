@@ -13,17 +13,20 @@ defmodule UserApp.SessionControllerTest do
   test "creates new user session when credentials are valid", %{conn: conn, user: user} do
     conn = post conn, session_path(conn, :create), @user_credentials
 
-    assert json_response(conn, 200)["data"]["user"] == %{id: user.id, username: user.username}
-    assert json_response(conn, 200)["data"]["jwt"] != nil
+    user_response = json_response(conn, 200)["data"]["user"]
+    assert user_response  == %{"id" => user.id, "username" => user.username}
+
+    token = json_response(conn, 200)["data"]["token"]
+    refute token == nil
   end
 
-  test "returns error when user's password is invalid", %{conn: conn, user: user} do
-    conn = post conn, session_path(conn, :create), @user_credentials.merge(password: "aaaaaa")
+  test "returns error when user's password is invalid", %{conn: conn} do
+    conn = post conn, session_path(conn, :create), %{username: "john", password: "badpass"}
 
     assert json_response(conn, 401)["error"] == "Invalid password"
   end
 
-  test "returns error when user doesn't exist", %{conn: conn, user: user} do
+  test "returns error when user doesn't exist", %{conn: conn} do
     conn = post conn, session_path(conn, :create), %{username: "chuck", password: "supersecret"}
 
     assert json_response(conn, 404)["error"] == "User does not exist"
