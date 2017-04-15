@@ -13,6 +13,9 @@ config :logger, level: :warn
 db_username = System.get_env("DATABASE_POSTGRESQL_USERNAME") || "developer"
 db_password = System.get_env("DATABASE_POSTGRESQL_PASSWORD") || "developer"
 
+config :guardian, Guardian,
+  secret_key: "DuWKWhfeBuho78bfbBTz/Hl4/LfcR+2bzoiy9A1SC/JjBNPlMXbn9QCqK1JhaTRz"
+
 # Configure your database
 config :user_app, UserApp.Repo,
   adapter: Ecto.Adapters.Postgres,
