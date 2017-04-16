@@ -31,4 +31,15 @@ defmodule UserApp.SessionControllerTest do
 
     assert json_response(conn, 404)["error"] == "User does not exist"
   end
+
+  test "deletes user session", %{conn: conn, user: user} do
+    # Log in user
+    {:ok, jwt, _} = Guardian.encode_and_sign(user)
+
+    conn = conn
+      |> put_req_header("authorization", "Bearer #{jwt}")
+      |> delete(session_path(conn, :delete))
+
+    assert json_response(conn, 200)["data"]["success"] == true
+  end
 end

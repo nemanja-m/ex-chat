@@ -8,6 +8,15 @@ defmodule UserApp.SessionController do
     |> create_login_response(Auth.login(username, password))
   end
 
+  def delete(conn, _params) do
+    Guardian.Plug.current_token(conn)
+    |> Guardian.revoke!
+
+    conn
+    |> put_status(:ok)
+    |> render("delete.json", success: true)
+  end
+
   defp create_login_response(conn, {:ok, user}) do
     conn = Guardian.Plug.api_sign_in(conn, user, :access)
     jwt  = Guardian.Plug.current_token(conn)

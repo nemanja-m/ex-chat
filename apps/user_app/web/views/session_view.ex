@@ -13,4 +13,8 @@ defmodule UserApp.SessionView do
   def render("error.json", %{reason: reason}) do
     %{error: reason}
   end
+
+  def render("delete.json", %{success: success}) do
+    %{data: %{success: success}}
+  end
 end
