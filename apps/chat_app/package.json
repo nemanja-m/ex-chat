@@ -1,0 +1,17 @@
+{
+  "name": "chat_app",
+  "version": "1.0.0",
+  "description": "Yet another chat app!",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "watch": "webpack --watch-stdin --progress --color"
+  },
+  "author": "Nemanja Milicevic",
+  "license": "MIT",
+  "devDependencies": {
+    "webpack": "^2.4.1"
+  }
+}

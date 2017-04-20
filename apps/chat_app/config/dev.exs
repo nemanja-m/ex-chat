@@ -11,8 +11,9 @@ config :chat_app, ChatApp.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
-  watchers: []
-
+  watchers: [
+    npm: ["run", "watch"]
+  ]
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
