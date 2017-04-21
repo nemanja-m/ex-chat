@@ -19,5 +19,18 @@ var config = module.exports = {
   output: {
     path: join("priv/static/js"),
     filename: "app.js"
-  }
+  },
+
+   module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: "babel-loader",
+        options: {
+          presets: ["react", "es2015"],
+        },
+      }
+    ],
+  },
 };
