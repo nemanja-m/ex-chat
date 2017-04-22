@@ -16,7 +16,7 @@ defmodule ChatApp.Router do
   scope "/", ChatApp do
     pipe_through :browser
 
-    get "/", ApplicationController, :index
+    get "/*path", ApplicationController, :index
   end
 
   scope "/api", ChatApp do
