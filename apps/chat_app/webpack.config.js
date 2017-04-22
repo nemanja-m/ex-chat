@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
-var path    = require("path")
-var webpack = require("webpack")
+var path = require('path');
+var webpack = require('webpack');
 
 // Helpers for geting path names
 function join(destination) {
@@ -9,26 +9,30 @@ function join(destination) {
 }
 
 function web(destination) {
-  return join("web/static/" + destination)
+  return join('web/static/' + destination)
 }
 
 var config = module.exports = {
 
-  entry: web("js/app.js"),
+  entry: web('js/app.js'),
 
   output: {
-    path: join("priv/static/js"),
-    filename: "app.js"
+    path: join('priv/static/js'),
+    filename: 'app.js'
   },
 
-   module: {
+  resolve: {
+    extensions: ['*', '.js', '.jsx']
+  },
+
+  module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: "babel-loader",
+        loader: 'babel-loader',
         options: {
-          presets: ["react", "es2015"],
+          presets: ['react', 'es2015'],
         },
       }
     ],
