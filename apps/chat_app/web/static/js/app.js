@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import store from './store';
+import Root from './components/containers/Root';
 
-class HelloWorld extends React.Component {
-  render() {
-    return (<h1>Hello World!</h1>)
-  }
-}
-
-ReactDOM.render(<HelloWorld/>, document.getElementById("main"))
+ReactDOM.render(
+  <Provider store={store}>
+    <Root />
+  </Provider>
+  , document.getElementById('root')
+);
