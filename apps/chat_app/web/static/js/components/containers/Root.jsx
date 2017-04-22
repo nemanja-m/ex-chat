@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Match, Miss } from 'react-router';
-// import Home from '../Home';
-// import NotFound from '../../components/NotFound';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import Home from './Home';
 
 class Root extends Component {
   render() {
-    return (<h1>Hello World!</h1>)
+    return (
+      <Router>
+        <div>
+          <Route exact pattern="/" component={Home} />
+        </div>
+      </Router>
+    );
   }
 }
 

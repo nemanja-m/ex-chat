@@ -1,6 +1,8 @@
 {
   "name": "chat_app",
   "version": "1.0.0",
+  "author": "Nemanja Milicevic",
+  "license": "MIT",
   "description": "Yet another chat app!",
   "main": "app.js",
   "directories": {
@@ -9,8 +11,6 @@
   "scripts": {
     "watch": "webpack --watch-stdin --progress --color"
   },
-  "author": "Nemanja Milicevic",
-  "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.24.1",
     "babel-loader": "^6.4.1",
@@ -23,6 +23,7 @@
     "react-dom": "^15.5.4",
     "react-redux": "^5.0.4",
     "react-router": "^4.1.1",
+    "react-router-dom": "^4.1.1",
     "redux": "^3.6.0",
     "redux-form": "^6.6.3",
     "redux-thunk": "^2.2.0"
