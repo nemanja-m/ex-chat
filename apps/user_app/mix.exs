@@ -31,7 +31,8 @@ defmodule UserApp.Mixfile do
         :gettext,
         :phoenix_ecto,
         :postgrex,
-        :comeonin
+        :comeonin,
+        :tackle
       ]
     ]
   end
@@ -52,7 +53,8 @@ defmodule UserApp.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:comeonin, "~> 3.0"},
-      {:guardian, "~> 0.14"}
+      {:guardian, "~> 0.14"},
+      {:tackle, github: "renderedtext/ex-tackle"}
     ]
   end
 

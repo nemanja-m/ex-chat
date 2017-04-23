@@ -12,8 +12,8 @@ defmodule UserApp do
       supervisor(UserApp.Repo, []),
       # Start the endpoint when the application starts
       supervisor(UserApp.Endpoint, []),
-      # Start your own worker by calling: UserApp.Worker.start_link(arg1, arg2, arg3)
-      # worker(UserApp.Worker, [arg1, arg2, arg3]),
+      # Start the RabbitMQ consumer
+      supervisor(UserApp.UserEventsConsumer, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

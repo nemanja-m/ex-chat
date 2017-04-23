@@ -31,3 +31,6 @@ config :user_app, UserApp.Repo,
   database: "user_app_dev",
   hostname: "localhost",
   pool_size: 10
+
+# RabbitMQ server url
+config :user_app, :rabbitmq_url, "amqp://localhost"
