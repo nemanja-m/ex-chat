@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from './Home';
+import Signup from './Signup';
 
 class Root extends Component {
   render() {
     return (
       <Router>
-        <div>
+        <Switch>
+          <Route pattern="/signup" component={Signup} />
           <Route exact pattern="/" component={Home} />
-        </div>
+        </Switch>
       </Router>
     );
   }
