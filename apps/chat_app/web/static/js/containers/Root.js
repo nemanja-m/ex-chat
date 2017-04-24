@@ -5,7 +5,7 @@ import { ConnectedRouter } from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
 import Home from './Home';
 import Signup from './Signup';
-import AuthenticatedRoute from '../components/AuthenticatedRoute';
+import AuthenticationRoute from '../components/AuthenticationRoute';
 
 class Root extends Component {
 
@@ -13,11 +13,23 @@ class Root extends Component {
     const { currentUser } = this.props;
     const history = createHistory();
 
+    const authenticated = { visibility: 'AUTHENTICATED', currentUser };
+    const unauthenticated = { visibility: 'UNAUTHENTICATED', currentUser };
+
     return (
       <ConnectedRouter history={history}>
         <div>
-          <AuthenticatedRoute exact path="/" component={Home} />
-          <Route path="/signup" component={Signup} />
+          <AuthenticationRoute
+            exact path="/"
+            component={Home}
+            {...authenticated}
+          />
+
+          <AuthenticationRoute
+            path="/signup"
+            component={Signup}
+            {...unauthenticated}
+          />
         </div>
       </ConnectedRouter>
     );
