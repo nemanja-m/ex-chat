@@ -5,11 +5,12 @@ import SignupForm from '../components/SignupForm';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onSubmit: (data) => { signup(data)(dispatch) }
+    onSubmit: (data) => { dispatch(signup(data)); }
   };
 };
 
 const Signup = connect(
+  null,
   mapDispatchToProps
 )(SignupForm);
 

@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
 import { reducer as form } from 'redux-form';
+import { routerReducer } from 'react-router-redux';
 
 const appReducer = combineReducers({
   form,
+  routing: routerReducer
 });
 
 // When we dispatch 'LOGOUT' action we are forcing every reducer
