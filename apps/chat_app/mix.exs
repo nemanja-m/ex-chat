@@ -29,7 +29,8 @@ defmodule ChatApp.Mixfile do
         :cowboy,
         :logger,
         :gettext,
-        :tackle
+        :tackle,
+        :httpoison
       ]
     ]
   end
@@ -48,7 +49,8 @@ defmodule ChatApp.Mixfile do
       {:phoenix_pubsub, "~> 1.0"},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      {:tackle, github: "renderedtext/ex-tackle"}
+      {:tackle, github: "renderedtext/ex-tackle"},
+      {:httpoison, "~> 0.11.1"}
    ]
   end
 end
