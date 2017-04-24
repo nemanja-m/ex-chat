@@ -10,9 +10,9 @@ defmodule UserApp.Router do
   scope "/api", UserApp do
     pipe_through :api
 
-    get    "/users",          UserController, :index
-    post   "/users/register", UserController, :create
-    delete "/users/:id",      UserController, :delete
+    get    "/users",     UserController, :index
+    post   "/users/",    UserController, :create
+    delete "/users/:id", UserController, :delete
 
     post   "/sessions", SessionController, :create
     delete "/sessions", SessionController, :delete
