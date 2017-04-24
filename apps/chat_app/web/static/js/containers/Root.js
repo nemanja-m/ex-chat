@@ -1,13 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Route } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
-import Home from './Home';
+import ChatRoom from './ChatRoom';
 import Signup from './Signup';
 import AuthenticationRoute from '../components/AuthenticationRoute';
+import { Socket } from 'phoenix';
 
 class Root extends Component {
+
+  componentDidMount() {
+
+    // Connect to Phoenix web socket.
+    const { dispatch } = this.props;
+    const socket = new Socket('/socket');
+    socket.connect();
+
+    dispatch({ type: 'SOCKET_CONNECTED', socket });
+  }
 
   render() {
     const { currentUser } = this.props;
@@ -21,7 +31,7 @@ class Root extends Component {
         <div>
           <AuthenticationRoute
             exact path="/"
-            component={Home}
+            component={ChatRoom}
             {...authenticated}
           />
 
