@@ -24,3 +24,6 @@ config :user_app, UserApp.Repo,
   database: "user_app_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+# RabbitMQ server url
+config :user_app, :rabbitmq_url, "amqp://localhost"
