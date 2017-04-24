@@ -1,5 +1,5 @@
 const initialState = {
-  currentUser: {},
+  currentUser: null,
   socket: null,
 };
 
