@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
-import createHistory from 'history/createBrowserHistory';
 import ChatRoom from './ChatRoom';
 import Signup from './Signup';
 import Login from './Login';
@@ -22,13 +21,12 @@ class Root extends Component {
 
   render() {
     const { currentUser } = this.props;
-    const history = createHistory();
 
     const authenticated = { visibility: 'AUTHENTICATED', currentUser };
     const unauthenticated = { visibility: 'UNAUTHENTICATED', currentUser };
 
     return (
-      <ConnectedRouter history={history}>
+      <ConnectedRouter history={this.props.history}>
         <div>
           <AuthenticationRoute
             exact path="/"
