@@ -5,13 +5,19 @@ defmodule ChatApp.UserAppClient do
   Client module that handles user actions such as register, login, logout.
   """
 
+  @user_api_url "http://localhost:4001/api"
+
   def register(user, socket_reference) do
     response = request(:registration, user)
 
     Phoenix.Channel.reply socket_reference, response
   end
 
-  @user_api_url "http://localhost:4001/api/"
+  def login(user, socket_reference) do
+    response = request(:login, user)
+
+    Phoenix.Channel.reply socket_reference, response
+  end
 
   defp request(:registration, user) do
     user_data = Poison.encode!(%{user: user})
@@ -20,13 +26,17 @@ defmodule ChatApp.UserAppClient do
     |> handle_response()
   end
 
-  defp handle_response({:ok, %HTTPoison.Response{body: body, status_code: code}}) do
+  defp request(:login, user) do
+    user_data = Poison.encode!(user)
+
+    HTTPoison.post("#{@user_api_url}/sessions", user_data, [{"Content-Type", "application/json"}])
+    |> handle_response()
+  end
+
+  defp handle_response({:ok, %HTTPoison.Response{body: body}}) do
     response = Poison.decode!(body)
 
-    case code do
-      422 -> {:error, response}
-      201 -> {:ok, response}
-    end
+    {:ok, response}
   end
 
   defp handle_response({:error, reason}) do

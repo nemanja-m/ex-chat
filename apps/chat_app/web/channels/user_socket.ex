@@ -3,6 +3,7 @@ defmodule ChatApp.UserSocket do
 
   ## Channels
   channel "registrations:*", ChatApp.RegistrationChannel
+  channel "sessions:*",      ChatApp.SessionChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

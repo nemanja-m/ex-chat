@@ -1,15 +1,15 @@
-export function signup(data) {
+export function login(data) {
   return (dispatch, getState) => {
     const socket = getState().channels.socket;
-    const channel = socket.channel('registrations:new');
+    const channel = socket.channel('sessions:new');
 
     channel
       .join()
       .receive('ok', () => {
+        console.log('Joined sessions channel!');
 
-        console.log('Joined channel!');
         channel
-          .push('signup', data)
+          .push('login', data)
           .receive('ok', (response) => { console.log(response);  })
           .receive('error', (response) => { console.log(response) });
       });
