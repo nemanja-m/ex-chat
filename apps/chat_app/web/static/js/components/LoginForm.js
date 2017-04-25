@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
 
-class SignupForm extends Component {
+class LoginForm extends Component {
   render() {
     return (
       <form onSubmit={ this.props.handleSubmit }>
-        <h3>
-          Create your
-          <strong className="text-danger"> ex-chat </strong>
-          account
-        </h3>
+        <h3>Enter your username and password</h3>
 
         <div className="form-group">
           <label htmlFor="username">Username</label> &nbsp;
@@ -21,8 +17,8 @@ class SignupForm extends Component {
           <Field name="password" component="input" type="password"/>
         </div>
 
-        <button type="submit" className="btn btn-primary">
-          { 'Sign up' }
+        <button type="submit" className="btn btn-success">
+          { 'Log in' }
         </button>
 
       </form>
@@ -30,4 +26,4 @@ class SignupForm extends Component {
   }
 }
 
-export default reduxForm({ form: 'signup' })(SignupForm);
+export default reduxForm({ form: 'login' })(LoginForm);

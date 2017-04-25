@@ -4,6 +4,7 @@ import { ConnectedRouter } from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
 import ChatRoom from './ChatRoom';
 import Signup from './Signup';
+import Login from './Login';
 import AuthenticationRoute from '../components/AuthenticationRoute';
 import { Socket } from 'phoenix';
 
@@ -38,6 +39,12 @@ class Root extends Component {
           <AuthenticationRoute
             path="/signup"
             component={Signup}
+            {...unauthenticated}
+          />
+
+          <AuthenticationRoute
+            path="/login"
+            component={Login}
             {...unauthenticated}
           />
         </div>
