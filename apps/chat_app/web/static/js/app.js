@@ -5,8 +5,8 @@ import createHistory from 'history/createBrowserHistory';
 import configureStore from './store';
 import Root from './containers/Root';
 
-const store = configureStore(history);
 const history = createHistory();
+const store = configureStore(history);
 
 render(
   <Provider store={store}>

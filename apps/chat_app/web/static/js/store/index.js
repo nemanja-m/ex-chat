@@ -4,7 +4,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { routerMiddleware } from 'react-router-redux';
 
 const configureStore = (history) => {
-  var middleware = [thunk, routerMiddleware(history)];
+  var middleware = [routerMiddleware(history), thunk];
 
   return createStore(
     reducers,

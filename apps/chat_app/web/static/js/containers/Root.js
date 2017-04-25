@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ConnectedRouter } from 'react-router-redux';
 import ChatRoom from './ChatRoom';
 import Signup from './Signup';
 import Login from './Login';
 import AuthenticationRoute from '../components/AuthenticationRoute';
+import { ConnectedRouter } from 'react-router-redux';
 import { Socket } from 'phoenix';
 
 class Root extends Component {
