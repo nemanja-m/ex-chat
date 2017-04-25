@@ -1,6 +1,8 @@
 defmodule UserApp.SessionControllerTest do
   use UserApp.ConnCase
 
+  alias UserApp.{User, Host, Repo}
+
   @user_credentials %{username: "john", password: "johndoe"}
 
   setup %{conn: conn} do
@@ -44,6 +46,11 @@ defmodule UserApp.SessionControllerTest do
   end
 
   test "deletes user session", %{conn: conn, user: user} do
+
+    # Assign host to user.
+    host  = Host |> first |> Repo.one
+    User.host_changeset(user, %{host_id: host.id}) |> Repo.update!
+
     # Log in user
     {:ok, jwt, _} = Guardian.encode_and_sign(user)
 
@@ -52,5 +59,9 @@ defmodule UserApp.SessionControllerTest do
       |> delete(session_path(conn, :delete))
 
     assert json_response(conn, 200)["data"]["success"] == true
+
+    # User shouldn't have host field after logout.
+    user = Repo.get User, user.id
+    assert user.host_id == nil
   end
 end

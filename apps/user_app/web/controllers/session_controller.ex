@@ -1,7 +1,7 @@
 defmodule UserApp.SessionController do
   use UserApp.Web, :controller
 
-  alias UserApp.Auth
+  alias UserApp.{Auth, User, Repo}
 
   def create(conn, %{"username" => username, "password" => password, "host" => host}) do
     conn
@@ -14,6 +14,7 @@ defmodule UserApp.SessionController do
     |> Guardian.revoke!
 
     conn
+    |> delete_host_from_user
     |> put_status(:ok)
     |> render("delete.json", success: true)
   end
@@ -37,5 +38,14 @@ defmodule UserApp.SessionController do
     conn
     |> put_status(:not_found)
     |> render("error.json", reason: "User does not exist")
+  end
+
+  defp delete_host_from_user(conn) do
+    user = Guardian.Plug.current_resource(conn)
+
+    User.host_changeset(user, %{host_id: nil})
+    |> Repo.update!
+
+    conn
   end
 end
