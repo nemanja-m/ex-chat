@@ -33,10 +33,14 @@ defmodule ChatApp.UserAppClient do
     |> handle_response()
   end
 
-  defp handle_response({:ok, %HTTPoison.Response{body: body}}) do
+  defp handle_response({:ok, %HTTPoison.Response{body: body, status_code: code}}) do
     response = Poison.decode!(body)
 
-    {:ok, response}
+    case code do
+      200 -> {:ok, response}
+      201 -> {:ok, response}
+      _   -> {:error, response}
+    end
   end
 
   defp handle_response({:error, reason}) do
