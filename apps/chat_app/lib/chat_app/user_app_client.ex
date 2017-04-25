@@ -1,5 +1,6 @@
 defmodule ChatApp.UserAppClient do
   require Logger
+
   alias ChatApp.Config
 
   @moduledoc """
@@ -26,9 +27,12 @@ defmodule ChatApp.UserAppClient do
   end
 
   defp request(:login, user) do
-    user_data = Poison.encode!(user)
+    params =
+      user
+      |> Map.merge(Config.host_info)
+      |> Poison.encode!
 
-    HTTPoison.post("#{Config.master_node_url}/sessions", user_data, [{"Content-Type", "application/json"}])
+    HTTPoison.post("#{Config.master_node_url}/sessions", params, [{"Content-Type", "application/json"}])
     |> handle_response()
   end
 

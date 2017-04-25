@@ -18,4 +18,8 @@ defmodule ChatApp.Config do
   def is_master? do
     Application.get_env(:chat_app, :master) == "true"
   end
+
+  def host_info do
+    %{ host: %{ address: address(), alias: alias() } }
+  end
 end
