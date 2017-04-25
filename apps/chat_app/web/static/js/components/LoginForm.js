@@ -21,6 +21,9 @@ class LoginForm extends Component {
           { 'Log in' }
         </button>
 
+        &nbsp;
+        <a href="/signup" className="active">Sign up</a>
+
       </form>
     );
   }
