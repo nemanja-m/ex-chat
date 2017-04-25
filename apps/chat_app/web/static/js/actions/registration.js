@@ -1,3 +1,5 @@
+import { push } from 'react-router-redux';
+
 export function signup(data) {
   return (dispatch, getState) => {
     const socket = getState().channels.socket;
@@ -10,7 +12,11 @@ export function signup(data) {
         console.log('Joined channel!');
         channel
           .push('signup', data)
-          .receive('ok', (response) => { console.log(response);  })
+          .receive('ok', (response) => {
+
+            // Redirect to login page after successful signup.
+            dispatch(push('/login'));
+          })
           .receive('error', (response) => { console.log(response) });
       });
   };
