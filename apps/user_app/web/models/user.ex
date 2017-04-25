@@ -5,6 +5,7 @@ defmodule UserApp.User do
     field :username, :string
     field :password, :string, virtual: true
     field :password_hash, :string
+    belongs_to :host, UserApp.Host
 
     timestamps()
   end
