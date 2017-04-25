@@ -3,15 +3,19 @@ defmodule ChatApp.ConfigTest do
 
   alias ChatApp.Config
 
-  test "default alias" do
+  test ".alias" do
     assert Config.alias == "Mars"
   end
 
-  test "default address" do
+  test ".address" do
     assert Config.address == "localhost:4001"
   end
 
-  test "default master node url" do
-    assert Config.master_node_url === "http://localhost:3000/api"
+  test ".master_node_url" do
+    assert Config.master_node_url == "http://localhost:3000/api"
+  end
+
+  test ".is_master?" do
+    assert Config.is_master? == true
   end
 end

@@ -14,4 +14,8 @@ defmodule ChatApp.Config do
   def alias do
     Application.get_env(:chat_app, :alias)
   end
+
+  def is_master? do
+    Application.get_env(:chat_app, :master) == "true"
+  end
 end

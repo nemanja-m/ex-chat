@@ -18,7 +18,8 @@ config :chat_app, :master_node,
   url: System.get_env("MASTER_NODE_URL") || "http://localhost:3000/api"
 
 config :chat_app,
-  alias: System.get_env("ALIAS") || "Mars"
+  alias:  System.get_env("ALIAS")  || "Mars", # Configure this node alias. Default value is 'Mars'.
+  master: System.get_env("MASTER") || "true"  # Set this flag to true if this node is master. Default is true.
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
