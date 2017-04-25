@@ -3,9 +3,10 @@ defmodule UserApp.SessionController do
 
   alias UserApp.Auth
 
-  def create(conn, %{"username" => username, "password" => password}) do
+  def create(conn, %{"username" => username, "password" => password, "host" => host}) do
     conn
-    |> create_login_response(Auth.login(username, password))
+    |> Auth.login(username, password, host)
+    |> create_login_response
   end
 
   def delete(conn, _params) do
@@ -17,7 +18,7 @@ defmodule UserApp.SessionController do
     |> render("delete.json", success: true)
   end
 
-  defp create_login_response(conn, {:ok, user}) do
+  defp create_login_response({conn, :ok, user}) do
     conn = Guardian.Plug.api_sign_in(conn, user, :access)
     jwt  = Guardian.Plug.current_token(conn)
 
@@ -26,13 +27,13 @@ defmodule UserApp.SessionController do
     |> render("show.json", user: user, jwt: jwt)
   end
 
-  defp create_login_response(conn, {:error, :unauthorized}) do
+  defp create_login_response({conn, :error, :unauthorized}) do
     conn
     |> put_status(:unauthorized)
     |> render("error.json", reason: "Invalid password")
   end
 
-  defp create_login_response(conn, {:error, :not_found}) do
+  defp create_login_response({conn, :error, :not_found}) do
     conn
     |> put_status(:not_found)
     |> render("error.json", reason: "User does not exist")

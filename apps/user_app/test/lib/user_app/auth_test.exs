@@ -1,27 +1,28 @@
 defmodule UserApp.AuthTest do
-  use UserApp.ModelCase, async: true
+  use UserApp.ConnCase, async: true
 
   import UserApp.RepoHelpers
 
   alias UserApp.Auth
 
-  setup do
+  setup %{conn: conn} do
     user = insert_user %{username: "john", password: "johndoe"}
+    host = insert_host()
 
-    {:ok, user: user}
+    {:ok, conn: conn, user: user, host: %{"address" => host.address, "alias" => host.alias}}
   end
 
-  test "logs in user when credentials are valid", %{user: user} do
-    {:ok, signed_user} = Auth.login("john", "johndoe")
+  test "logs in user when credentials are valid", %{conn: conn, user: user, host: host} do
+    {_, :ok, signed_user} = Auth.login(conn, "john", "johndoe", host)
 
     assert signed_user.id == user.id
   end
 
-  test "returns error when password is invalid" do
-    assert Auth.login("john", "badpass") == {:error, :unauthorized}
+  test "returns error when password is invalid", %{conn: conn, host: host} do
+    assert {conn, :error, :unauthorized} == Auth.login(conn, "john", "badpass", host)
   end
 
-  test "returns error when user does not exist" do
-    assert Auth.login("chuck", "badpass") == {:error, :not_found}
+  test "returns error when user does not exist", %{conn: conn, host: host} do
+    assert {conn, :error, :not_found} == Auth.login(conn, "chuck", "badpass", host)
   end
 end

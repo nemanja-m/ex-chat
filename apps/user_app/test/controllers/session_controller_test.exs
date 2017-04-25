@@ -6,12 +6,19 @@ defmodule UserApp.SessionControllerTest do
   setup %{conn: conn} do
     user = insert_user @user_credentials
     conn = put_req_header(conn, "accept", "application/json")
+    host = insert_host()
 
-    {:ok, conn: conn, user: user}
+    host_hash = %{
+      host: %{"address" => host.address, "alias" => host.alias}
+    }
+
+    {:ok, conn: conn, user: user, host: host_hash}
   end
 
-  test "creates new user session when credentials are valid", %{conn: conn, user: user} do
-    conn = post conn, session_path(conn, :create), @user_credentials
+  test "creates new user session when credentials are valid", %{conn: conn, user: user, host: host} do
+    params = Map.merge @user_credentials, host
+
+    conn = post conn, session_path(conn, :create), params
 
     user_response = json_response(conn, 200)["data"]["user"]
     assert user_response  == %{"id" => user.id, "username" => user.username}
@@ -20,14 +27,18 @@ defmodule UserApp.SessionControllerTest do
     refute token == nil
   end
 
-  test "returns error when user's password is invalid", %{conn: conn} do
-    conn = post conn, session_path(conn, :create), %{username: "john", password: "badpass"}
+  test "returns error when user's password is invalid", %{conn: conn, host: host} do
+    params = Map.merge %{username: "john", password: "badpass"}, host
+
+    conn = post conn, session_path(conn, :create), params
 
     assert json_response(conn, 401)["error"] == "Invalid password"
   end
 
-  test "returns error when user doesn't exist", %{conn: conn} do
-    conn = post conn, session_path(conn, :create), %{username: "chuck", password: "supersecret"}
+  test "returns error when user doesn't exist", %{conn: conn, host: host} do
+    params = Map.merge %{username: "chuck", password: "supersecret"}, host
+
+    conn = post conn, session_path(conn, :create), params
 
     assert json_response(conn, 404)["error"] == "User does not exist"
   end

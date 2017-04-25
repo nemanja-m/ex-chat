@@ -10,16 +10,21 @@ defmodule UserApp.User do
     timestamps()
   end
 
-  def registration_changeset(struct, params) do
-    struct
-    |> changeset(params)
-    |> put_hashed_password
-  end
-
   def changeset(struct, params \\ :empty) do
     struct
     |> cast(params, [:username, :password])
     |> validate_user
+  end
+
+  def host_changeset(struct, host) do
+    struct
+    |> cast(host, [:host_id])
+  end
+
+  def registration_changeset(struct, params) do
+    struct
+    |> changeset(params)
+    |> put_hashed_password
   end
 
   defp put_hashed_password(changeset) do
