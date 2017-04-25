@@ -1,11 +1,10 @@
 defmodule ChatApp.UserAppClient do
   require Logger
+  alias ChatApp.Config
 
   @moduledoc """
   Client module that handles user actions such as register, login, logout.
   """
-
-  @user_api_url "http://localhost:4001/api"
 
   def register(user, socket_reference) do
     response = request(:registration, user)
@@ -22,14 +21,14 @@ defmodule ChatApp.UserAppClient do
   defp request(:registration, user) do
     user_data = Poison.encode!(%{user: user})
 
-    HTTPoison.post("#{@user_api_url}/users", user_data, [{"Content-Type", "application/json"}])
+    HTTPoison.post("#{Config.master_node_url}/users", user_data, [{"Content-Type", "application/json"}])
     |> handle_response()
   end
 
   defp request(:login, user) do
     user_data = Poison.encode!(user)
 
-    HTTPoison.post("#{@user_api_url}/sessions", user_data, [{"Content-Type", "application/json"}])
+    HTTPoison.post("#{Config.master_node_url}/sessions", user_data, [{"Content-Type", "application/json"}])
     |> handle_response()
   end
 
