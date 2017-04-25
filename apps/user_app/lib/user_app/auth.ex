@@ -19,12 +19,12 @@ defmodule UserApp.Auth do
     end
   end
 
-  defp assign_host_to_user(%{"address" => address, "alias" => alias}, user) do
-    # Host should always be present in DB before login request.
-    host = Repo.get_by(Host, address: address)
+  defp assign_host_to_user(params = %{"address" => address, "alias" => _alias}, user) do
+    host = prepare_host params, Repo.get_by(Host, address: address)
 
-    # Assigns host to logged user.
-    User.host_changeset(user, %{host_id: host.id})
-    |> Repo.update!
+    User.host_changeset(user, %{host_id: host.id}) |> Repo.update!
   end
+
+  defp prepare_host(params, nil), do: Host.changeset(%Host{}, params) |> Repo.insert!
+  defp prepare_host(_, host), do: host
 end

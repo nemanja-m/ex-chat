@@ -3,7 +3,7 @@ defmodule UserApp.AuthTest do
 
   import UserApp.RepoHelpers
 
-  alias UserApp.Auth
+  alias UserApp.{Auth, Repo, Host}
 
   setup %{conn: conn} do
     user = insert_user %{username: "john", password: "johndoe"}
@@ -15,6 +15,15 @@ defmodule UserApp.AuthTest do
   test "logs in user when credentials are valid", %{conn: conn, user: user, host: host} do
     {_, :ok, signed_user} = Auth.login(conn, "john", "johndoe", host)
 
+    assert signed_user.id == user.id
+  end
+
+  test "creates new host when given host does not exist", %{conn: conn, user: user} do
+    host = %{"address" => "8.8.8.8", "alias" => "Jupiter"}
+
+    {_, :ok, signed_user} = Auth.login(conn, "john", "johndoe", host)
+
+    assert Repo.get_by(Host, address: "8.8.8.8") != nil
     assert signed_user.id == user.id
   end
 
