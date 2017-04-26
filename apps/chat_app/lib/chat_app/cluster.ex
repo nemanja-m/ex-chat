@@ -1,7 +1,7 @@
 defmodule ChatApp.Cluster do
   use GenServer
 
-  alias ChatApp.{Node, User}
+  alias ChatApp.{Node, User, Config}
 
   def start_link(_opts \\ []) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
@@ -38,7 +38,7 @@ defmodule ChatApp.Cluster do
   def init(_), do: {:ok, %{}}
 
   def handle_call({:register_node, %{"alias" => aliaz, "address" => address}}, _from, nodes) do
-    case Map.has_key?(nodes, aliaz) do
+    case Map.has_key?(nodes, aliaz) || (aliaz == Config.alias()) do
       true ->
         {:reply, :node_exists, nodes}
 

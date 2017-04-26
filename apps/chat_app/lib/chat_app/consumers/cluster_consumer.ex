@@ -5,11 +5,8 @@ defmodule ChatApp.ClusterConsumer do
     routing_key: "cluster-event",
     service: "#{ChatApp.Config.alias}"
 
-  defmodule ClusterError do
-    defexception message: "Cluser error"
-  end
-
   alias ChatApp.{Config, Cluster, ClusterHandler}
+  require Logger
 
   def handle_message(message) do
     message
@@ -23,7 +20,7 @@ defmodule ChatApp.ClusterConsumer do
         ClusterHandler.update_cluster(node, Config.is_master?)
 
       :node_exists ->
-        raise ClusterError, message: "Node with alias: '#{node["alias"]}' exists"
+        Logger.error "Node with alias: '#{node["alias"]}' already exists"
     end
   end
   defp parse_message(%{"type" => "REGISTER_NODES", "payload" => nodes}) do

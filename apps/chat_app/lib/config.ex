@@ -24,7 +24,7 @@ defmodule ChatApp.Config do
   end
 
   def this do
-    host_info[:host]
+    host_info()[:host]
   end
 
   def master_node_alias do
@@ -32,7 +32,7 @@ defmodule ChatApp.Config do
   end
 
   def master_exchange do
-    "#{master_node_alias |> String.downcase}-exchange"
+    "#{master_node_alias() |> String.downcase}-exchange"
   end
 
 end
