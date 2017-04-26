@@ -1,7 +1,7 @@
 defmodule ChatApp.ClusterConsumerTest do
   use ExUnit.Case
 
-  alias ChatApp.{Config, Cluster}
+  alias ChatApp.{Config, Cluster, Node}
 
   @options %{
     url: Application.get_env(:chat_app, :rabbitmq_url),
@@ -38,6 +38,9 @@ defmodule ChatApp.ClusterConsumerTest do
         %{"type" => "REGISTER_NODE", "payload" => node} ->
           Poison.encode!(node) |> MessageTrace.save("cluster-consumer-node")
 
+        %{"type" => "UNREGISTER_NODE", "payload" => %{"alias" => aliaz}} ->
+          aliaz |> MessageTrace.save("cluster-consumer-unregister")
+
         _ -> nil
       end
     end
@@ -66,6 +69,7 @@ defmodule ChatApp.ClusterConsumerTest do
 
     MessageTrace.clear("cluster-consumer")
     MessageTrace.clear("cluster-consumer-node")
+    MessageTrace.clear("cluster-consumer-unregister")
 
     on_exit fn ->
       Process.exit npid, :kill
@@ -89,5 +93,20 @@ defmodule ChatApp.ClusterConsumerTest do
     refute MessageTrace.content("cluster-consumer") |> String.contains?("Neptune")
     assert MessageTrace.content("cluster-consumer") |> String.contains?("Jupiter")
     assert MessageTrace.content("cluster-consumer-node") |> String.contains?("Neptune")
+
+    # Unregister node.
+
+    message = %{
+      type: "UNREGISTER_NODE",
+      payload: %{"alias" => "Neptune"}
+    }
+
+    Tackle.publish(Poison.encode!(message), @options)
+
+    :timer.sleep(2 * 1000)
+
+    assert Cluster.nodes == [%Node{alias: "Jupiter", address: "milkyway", users: %{}}]
+    assert MessageTrace.content("cluster-consumer-unregister") |> String.contains?("Neptune")
   end
+
 end
