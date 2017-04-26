@@ -8,9 +8,8 @@ defmodule UserApp.Auth do
 
     cond do
       user && checkpw(password, user.password_hash) ->
-        assign_host_to_user(host, user)
+        {conn, :ok, assign_host_to_user(host, user)}
 
-        {conn, :ok, user}
       user ->
         {conn, :error, :unauthorized}
       true ->
@@ -22,7 +21,7 @@ defmodule UserApp.Auth do
   defp assign_host_to_user(params = %{"address" => address, "alias" => _alias}, user) do
     host = prepare_host params, Repo.get_by(Host, address: address)
 
-    User.host_changeset(user, %{host_id: host.id}) |> Repo.update!
+    User.host_changeset(user, %{host_id: host.id}) |> Repo.update! |> Repo.preload(:host)
   end
 
   defp prepare_host(params, nil), do: Host.changeset(%Host{}, params) |> Repo.insert!

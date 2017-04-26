@@ -8,10 +8,10 @@ defmodule UserApp.SessionControllerTest do
   setup %{conn: conn} do
     user = insert_user @user_credentials
     conn = put_req_header(conn, "accept", "application/json")
-    host = insert_host()
+    insert_host()
 
-    host_hash = %{
-      host: %{"address" => host.address, "alias" => host.alias}
+    host_hash =  %{
+      host: %{"address" => "local", "alias" => "Mars"}
     }
 
     {:ok, conn: conn, user: user, host: host_hash}
@@ -21,9 +21,13 @@ defmodule UserApp.SessionControllerTest do
     # Log in user
     params = Map.merge @user_credentials, host
 
-    post(conn, session_path(conn, :create), params)
-    |> get(session_path(conn, :index))
-    |> json_response(200)
+    %{"data" => [ response ]} =
+      post(conn, session_path(conn, :create), params)
+      |> get(session_path(conn, :index))
+      |> json_response(200)
+
+    assert response["username"] == "john"
+    assert response["host"] == %{"address" => "local", "alias" => "Mars"}
   end
 
   test "creates new user session when credentials are valid", %{conn: conn, user: user, host: host} do
@@ -32,7 +36,14 @@ defmodule UserApp.SessionControllerTest do
     conn = post conn, session_path(conn, :create), params
 
     user_response = json_response(conn, 200)["data"]["user"]
-    assert user_response  == %{"id" => user.id, "username" => user.username}
+
+    expectation = %{
+      "id" => user.id,
+      "username" => user.username,
+      "host" => %{"address" => "local", "alias" => "Mars"}
+    }
+
+    assert user_response  == expectation
 
     token = json_response(conn, 200)["data"]["token"]
     refute token == nil
@@ -57,7 +68,7 @@ defmodule UserApp.SessionControllerTest do
   test "deletes user session", %{conn: conn, user: user} do
 
     # Assign host to user.
-    host  = Host |> first |> Repo.one
+    host = Host |> first |> Repo.one
     User.host_changeset(user, %{host_id: host.id}) |> Repo.update!
 
     # Log in user
