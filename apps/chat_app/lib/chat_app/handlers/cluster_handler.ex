@@ -46,6 +46,7 @@ defmodule ChatApp.ClusterHandler do
 
   defp update_sender(sender) do
     available_nodes_for(sender)
+    |> List.insert_at(0, Config.this)
     |> publish_message("REGISTER_NODES", sender)
   end
 
