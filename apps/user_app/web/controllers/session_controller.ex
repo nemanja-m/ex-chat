@@ -3,6 +3,18 @@ defmodule UserApp.SessionController do
 
   alias UserApp.{Auth, User, Repo}
 
+  def index(conn, _params) do
+    users =
+      User
+      |> where([user], not is_nil(user.host_id))
+      |> Repo.all
+      |> Repo.preload(:host)
+
+    conn
+    |> put_status(:ok)
+    |> render(UserApp.UserView, "index.json", users: users)
+  end
+
   def create(conn, %{"username" => username, "password" => password, "host" => host}) do
     conn
     |> Auth.login(username, password, host)

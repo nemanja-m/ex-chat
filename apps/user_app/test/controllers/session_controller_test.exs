@@ -17,6 +17,15 @@ defmodule UserApp.SessionControllerTest do
     {:ok, conn: conn, user: user, host: host_hash}
   end
 
+  test "returns all logged users", %{conn: conn, host: host} do
+    # Log in user
+    params = Map.merge @user_credentials, host
+
+    post(conn, session_path(conn, :create), params)
+    |> get(session_path(conn, :index))
+    |> json_response(200)
+  end
+
   test "creates new user session when credentials are valid", %{conn: conn, user: user, host: host} do
     params = Map.merge @user_credentials, host
 

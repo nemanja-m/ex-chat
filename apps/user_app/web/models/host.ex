@@ -1,6 +1,7 @@
 defmodule UserApp.Host do
   use UserApp.Web, :model
 
+  @derive {Poison.Encoder, only: [:address, :alias]}
   schema "hosts" do
     field :address, :string
     field :alias, :string

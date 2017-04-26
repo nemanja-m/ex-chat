@@ -14,6 +14,7 @@ defmodule UserApp.Router do
     post   "/users/",    UserController, :create
     delete "/users/:id", UserController, :delete
 
+    get    "/sessions", SessionController, :index
     post   "/sessions", SessionController, :create
     delete "/sessions", SessionController, :delete
   end

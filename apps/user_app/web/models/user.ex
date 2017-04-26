@@ -1,6 +1,7 @@
 defmodule UserApp.User do
   use UserApp.Web, :model
 
+  @derive {Poison.Encoder, only: [:id, :username, :host]}
   schema "users" do
     field :username, :string
     field :password, :string, virtual: true
