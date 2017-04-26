@@ -12,7 +12,12 @@ defmodule ChatApp do
     ]
 
     opts = [strategy: :one_for_one, name: ChatApp.Supervisor]
-    Supervisor.start_link(children, opts)
+    pid = Supervisor.start_link(children, opts)
+
+    # Register self at master node.
+    ChatApp.ClusterHandler.register_self()
+
+    pid
   end
 
   # Tell Phoenix to update the endpoint configuration

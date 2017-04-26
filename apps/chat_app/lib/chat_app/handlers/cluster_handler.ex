@@ -2,42 +2,57 @@ defmodule ChatApp.ClusterHandler do
 
   alias ChatApp.{Config, Cluster}
 
+  @doc """
+  Returns exhange name for given node's alias.
+  """
   def exchange_name(aliaz) do
     "#{aliaz |> String.downcase}-exchange"
   end
 
-  def update_cluster(node = %{"alias" => aliaz, "address" => _addr}, true) do
-    # Send list of nodes in cluster to sender.
-    update_sender(aliaz)
+  @doc """
+  Register this (non-master) node at cluster.
+  'REGISTER_NODE' request is sent to master exchange.
+  """
+  def register_self do
+    unless Config.is_master? do
+      publish_message(Config.this, "REGISTER_NODE", Config.master_node_alias)
+    end
+  end
 
-    # Notify rest of cluster that new node is registered.
+  @doc """
+  Notify rest of cluster that new node is registered. Also, returns
+  list of current nodes in cluster to the new node ( sender ).
+  """
+  def update_cluster(node = %{"alias" => aliaz, "address" => _addr}, true) do
+    update_sender(aliaz)
     notify_cluster(node)
   end
   def update_cluster(_params, false), do: nil
 
-  defp update_sender(sender) do
-    options = publish_options(sender)
-
+  @doc """
+  Publish messages with specific type and payload to the
+  receiver's exchange.
+  """
+  def publish_message(payload, type, receiver) do
     message = %{
-      type: "REGISTER_NODES",
-      payload: available_nodes_for(sender)
+      type: type,
+      payload: payload
     }
 
+    options = publish_options(receiver)
+
     Tackle.publish(Poison.encode!(message), options)
+  end
+
+  defp update_sender(sender) do
+    available_nodes_for(sender)
+    |> publish_message("REGISTER_NODES", sender)
   end
 
   defp notify_cluster(node = %{"alias" => aliaz, "address" => _addr}) do
     available_nodes_for(aliaz)
     |> Enum.each(fn %{alias: receiver, address: _addr} ->
-
-      message = %{
-        type: "REGISTER_NODE",
-        payload: node
-      }
-
-      options = publish_options(receiver)
-
-      Tackle.publish(Poison.encode!(message), options)
+      publish_message(node, "REGISTER_NODE", receiver)
     end)
   end
 

@@ -26,6 +26,12 @@ defmodule ChatApp.ClusterConsumer do
         raise ClusterError, message: "Node with alias: '#{node["alias"]}' exists"
     end
   end
+  defp parse_message(%{"type" => "REGISTER_NODES", "payload" => nodes}) do
+    nodes
+    |> Enum.each(fn node ->
+      Cluster.register_node(node)
+    end)
+  end
   defp parse_message(_message), do: nil
 
 end

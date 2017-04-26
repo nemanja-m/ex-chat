@@ -15,7 +15,8 @@ config :logger, :console,
 
 # Configure master node
 config :chat_app, :master_node,
-  url: System.get_env("MASTER_NODE_URL") || "http://localhost:3000/api"
+  url:   System.get_env("MASTER_NODE_URL")   || "http://localhost:3000/api",
+  alias: System.get_env("MASTER_NODE_ALIAS") || "Mars"
 
 config :chat_app,
   alias:  System.get_env("ALIAS")  || "Mars", # Configure this node alias. Default value is 'Mars'.

@@ -22,4 +22,17 @@ defmodule ChatApp.Config do
   def host_info do
     %{ host: %{ address: address(), alias: alias() } }
   end
+
+  def this do
+    host_info[:host]
+  end
+
+  def master_node_alias do
+    Application.get_env(:chat_app, :master_node)[:alias]
+  end
+
+  def master_exchange do
+    "#{master_node_alias |> String.downcase}-exchange"
+  end
+
 end
