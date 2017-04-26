@@ -19,6 +19,15 @@ defmodule ChatApp.UserAppClient do
     Phoenix.Channel.reply socket_reference, response
   end
 
+  def logout(token) do
+    headers = [
+      {"Authorization", "Bearer #{token}"},
+      {"Content-Type", "application/json"}
+    ]
+
+    HTTPoison.delete("#{Config.master_node_url}/sessions", headers)
+  end
+
   defp request(:registration, user) do
     user_data = Poison.encode!(%{user: user})
 

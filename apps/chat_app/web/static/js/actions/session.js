@@ -6,6 +6,7 @@ function setCurrentUser(dispatch, response) {
   sessionStorage.setItem('ex-chat-token', token);
 
   dispatch({ type: 'USER_LOGGED_IN', user });
+  dispatch({ type: 'CHAT_ROOM_ENTERED', token });
 }
 
 export function login(data) {

@@ -19,4 +19,3 @@ defmodule ChatApp.SessionChannel do
   end
 
 end
-
