@@ -9,7 +9,7 @@ defmodule ChatApp.RoomChannel do
 
   # Logout current user on leaving room channel.
   # (Page refresh, tab/browser close etc.)
-  def terminate(reason, socket) do
+  def terminate(_reason, socket) do
     token = socket.assigns.token
 
     UserAppClient.logout(token)

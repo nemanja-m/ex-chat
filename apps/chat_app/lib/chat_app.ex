@@ -8,6 +8,7 @@ defmodule ChatApp do
     children = [
       # Start the endpoint when the application starts
       supervisor(ChatApp.Endpoint, []),
+      worker(ChatApp.Cluster, [])
     ]
 
     opts = [strategy: :one_for_one, name: ChatApp.Supervisor]
