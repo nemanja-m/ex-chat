@@ -10,6 +10,11 @@ defmodule UserApp.UserView do
   end
 
   def render("user.json", %{user: user}) do
-    %{id: user.id, username: user.username, host: user.host}
+    hash = %{id: user.id, username: user.username}
+
+    case user.host_id do
+      nil -> hash
+      _   -> Map.merge(hash, %{host: user.host})
+    end
   end
 end
