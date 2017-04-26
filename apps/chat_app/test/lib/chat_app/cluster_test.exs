@@ -1,9 +1,14 @@
 defmodule ChatApp.ClusterTest do
   use ExUnit.Case, async: true
 
-  alias ChatApp.{Cluster, Node, User}
+  alias ChatApp.{Cluster, Node, User, Config}
 
-  @node %{"alias" => "Mars", "address" => "localhost"}
+  @node %{"alias" => "Neptune", "address" => "localhost"}
+
+  def this do
+    Config.this()
+    |> Enum.reduce(%{}, fn {k, v}, acc -> Map.put(acc, to_string(k), v) end)
+  end
 
   setup do
     Cluster.clear
@@ -20,6 +25,7 @@ defmodule ChatApp.ClusterTest do
   test ".register_node" do
     assert :ok = Cluster.register_node @node
     assert :node_exists = Cluster.register_node @node
+    assert :node_exists = Cluster.register_node this()
     assert Enum.count(Cluster.nodes) == 1
   end
 
@@ -41,7 +47,7 @@ defmodule ChatApp.ClusterTest do
     assert node.users == %{42 => "John"}
 
     # Node doesn't exists
-    assert :node_missing = Cluster.add_user "Neptune", %User{}
+    assert :node_missing = Cluster.add_user "Jupiter", %User{}
   end
 
   test ".remove_user" do
@@ -60,7 +66,7 @@ defmodule ChatApp.ClusterTest do
 
   test ".clear" do
     Cluster.register_node @node
-    Cluster.register_node %{"alias" => "Neptune", "address" => "localhost:4000"}
+    Cluster.register_node %{"alias" => "Jupiter", "address" => "localhost:4000"}
 
     assert Enum.count(Cluster.nodes) == 2
 
