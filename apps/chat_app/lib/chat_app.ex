@@ -6,9 +6,9 @@ defmodule ChatApp do
 
     # Define workers and child supervisors to be supervised
     children = [
-      # Start the endpoint when the application starts
       supervisor(ChatApp.Endpoint, []),
-      worker(ChatApp.Cluster, [])
+      worker(ChatApp.Cluster, []),
+      worker(ChatApp.ClusterConsumer, [])
     ]
 
     opts = [strategy: :one_for_one, name: ChatApp.Supervisor]

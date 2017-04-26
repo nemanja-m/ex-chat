@@ -8,3 +8,6 @@ config :chat_app, ChatApp.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+# RabbitMQ server url
+config :chat_app, :rabbitmq_url, "amqp://localhost"
