@@ -78,7 +78,7 @@ defmodule ChatApp.ClusterConsumerTest do
   end
 
   test "handle_message" do
-    # Put some nodes in cluster beffore test.
+    # Put some nodes in cluster before test.
     :ok = Cluster.register_node(%{"alias" => "Jupiter", "address" => "milkyway"})
 
     message = %{

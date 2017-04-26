@@ -5,7 +5,7 @@ defmodule ChatApp.ClusterConsumer do
     routing_key: "cluster-event",
     service: "#{ChatApp.Config.alias}"
 
-  alias ChatApp.{Config, Cluster, ClusterHandler}
+  alias ChatApp.{Config, Cluster, ClusterHandler, User}
   require Logger
 
   def handle_message(message) do
@@ -27,6 +27,14 @@ defmodule ChatApp.ClusterConsumer do
     nodes
     |> Enum.each(fn node ->
       Cluster.register_node(node)
+    end)
+
+    # Get list of all active users and map them to corresponding nodes in cluster.
+    response = HTTPoison.get!("#{Config.master_node_url}/sessions")
+
+    Poison.decode!(response.body)["data"]
+    |> Enum.each(fn %{"host" => host, "id" => id, "username" => username} ->
+      Cluster.add_user(host["alias"], %User{id: id, username: username})
     end)
   end
   defp process_message(%{"type" => "UNREGISTER_NODE", "payload" => %{"alias" => aliaz}}) do
