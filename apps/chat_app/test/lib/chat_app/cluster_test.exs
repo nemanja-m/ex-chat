@@ -47,7 +47,7 @@ defmodule ChatApp.ClusterTest do
   end
 
   test ".add_user" do
-    assert :ok = Cluster.add_user Config.alias, %User{}
+    :ok = Cluster.add_user Config.alias, %User{}
 
     [node] = Cluster.nodes
 
@@ -70,6 +70,14 @@ defmodule ChatApp.ClusterTest do
 
     [node] = Cluster.nodes
     assert node.users == %{}
+  end
+
+  test ".users" do
+    :ok = Cluster.add_user Config.alias, %User{id: 1, username: "Chuck"}
+    :ok = Cluster.add_user Config.alias, %User{id: 2, username: "Borris"}
+    :ok = Cluster.add_user Config.alias, %User{id: 3, username: "John"}
+
+    assert Cluster.users == ["Chuck", "Borris", "John"]
   end
 
   test ".clear" do

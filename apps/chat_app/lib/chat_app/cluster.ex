@@ -29,6 +29,10 @@ defmodule ChatApp.Cluster do
     GenServer.call(__MODULE__, {:nodes})
   end
 
+  def users do
+    GenServer.call(__MODULE__, {:users})
+  end
+
   def clear do
     GenServer.cast(__MODULE__, {:clear})
   end
@@ -92,6 +96,15 @@ defmodule ChatApp.Cluster do
       nil ->
         {:reply, {:error, :node_not_found}, nodes}
     end
+  end
+
+  def handle_call({:users}, _from, nodes) do
+    users =
+      nodes
+      |> Enum.map(fn {_aliaz, %{address: _addr, users: users}} -> Map.values(users) end)
+      |> Enum.concat
+
+    {:reply, users, nodes}
   end
 
   def handle_cast({:unregister_node, aliaz}, nodes) do
