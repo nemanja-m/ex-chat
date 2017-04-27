@@ -18,6 +18,7 @@ defmodule UserApp.SessionController do
   def create(conn, %{"username" => username, "password" => password, "host" => host}) do
     conn
     |> Auth.login(username, password, host)
+    |> notify_master_node
     |> create_login_response
   end
 
@@ -60,4 +61,27 @@ defmodule UserApp.SessionController do
 
     conn
   end
+
+  # Publish message to master's exchange. After master ChatApp receives
+  # this message, it will publish 'ADD_USER' message to rest of the cluster.
+  defp notify_master_node({conn, :ok, user}) do
+    master_alias = Application.get_env(:user_app, :master_alias)
+
+    options = %{
+      url: Application.get_env(:user_app, :rabbitmq_url),
+      exchange: "#{String.downcase(master_alias)}-exchange",
+      routing_key: "cluster-event"
+    }
+
+    message = %{
+      type: "ADD_USER",
+      payload: user
+    }
+
+    Tackle.publish(Poison.encode!(message), options)
+
+    {conn, :ok, user}
+  end
+  defp notify_master_node(params), do: params
+
 end
