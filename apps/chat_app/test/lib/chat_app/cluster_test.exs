@@ -64,7 +64,9 @@ defmodule ChatApp.ClusterTest do
     [node] = Cluster.nodes
     assert node.users == %{42 => "John"}
 
-    Cluster.remove_user Config.alias, 42
+    {:ok, %{id: 42, username: "John"}} = Cluster.remove_user Config.alias, 42
+    {:error, :user_not_found} = Cluster.remove_user Config.alias, 23
+    {:error, :node_not_found} = Cluster.remove_user "Jupiter", 42
 
     [node] = Cluster.nodes
     assert node.users == %{}

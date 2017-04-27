@@ -22,7 +22,7 @@ defmodule ChatApp.Cluster do
   end
 
   def remove_user(aliaz, user_id) do
-    GenServer.cast(__MODULE__, {:remove_user, aliaz, user_id})
+    GenServer.call(__MODULE__, {:remove_user, aliaz, user_id})
   end
 
   def nodes do
@@ -75,24 +75,31 @@ defmodule ChatApp.Cluster do
     {:reply, nodes_list(nodes), nodes}
   end
 
+  def handle_call({:remove_user, aliaz, user_id}, _from, nodes) do
+    case Map.get(nodes, aliaz) do
+      %{address: address, users: users} ->
+        case Map.get(users, user_id) do
+          nil ->
+            {:reply, {:error, :user_not_found}, nodes}
+
+          username ->
+            new_users = Map.delete(users, user_id)
+            nodes     = Map.put(nodes, aliaz, %{address: address, users: new_users})
+
+            {:reply, {:ok, %{id: user_id, username: username}}, nodes}
+        end
+
+      nil ->
+        {:reply, {:error, :node_not_found}, nodes}
+    end
+  end
+
   def handle_cast({:unregister_node, aliaz}, nodes) do
     {:noreply, Map.delete(nodes, aliaz)}
   end
 
   def handle_cast({:clear}, _nodes) do
     {:noreply, this_node()}
-  end
-
-  def handle_cast({:remove_user, aliaz, user_id}, nodes) do
-    case Map.get(nodes, aliaz) do
-      %{address: address, users: users} ->
-        new_users = Map.delete(users, user_id)
-        nodes     = Map.put(nodes, aliaz, %{address: address, users: new_users})
-
-        {:noreply, nodes}
-      nil ->
-        {:noreply, nodes}
-    end
   end
 
   defp nodes_list(nodes) do
