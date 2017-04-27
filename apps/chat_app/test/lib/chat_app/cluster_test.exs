@@ -10,36 +10,44 @@ defmodule ChatApp.ClusterTest do
     |> Enum.reduce(%{}, fn {k, v}, acc -> Map.put(acc, to_string(k), v) end)
   end
 
+  def this_as_node do
+    %{"alias" => aliaz, "address" => address} = this()
+
+    %Node{alias: aliaz, address: address}
+  end
+
   setup do
     Cluster.clear
   end
 
   test ".nodes" do
+    assert Cluster.nodes == [ this_as_node() ]
+
     Cluster.register_node @node
 
     node = %Node{alias: @node["alias"], address: @node["address"], users: %{}}
 
-    assert Cluster.nodes == [ node ]
+    assert Cluster.nodes == [ this_as_node(), node ]
   end
 
   test ".register_node" do
     assert :ok = Cluster.register_node @node
     assert :node_exists = Cluster.register_node @node
     assert :node_exists = Cluster.register_node this()
-    assert Enum.count(Cluster.nodes) == 1
+    assert Enum.count(Cluster.nodes) == 2
   end
 
   test ".unregister_node" do
     :ok = Cluster.register_node @node
 
     Cluster.unregister_node @node["alias"]
-    assert Enum.count(Cluster.nodes) == 0
+
+    assert Enum.count(Cluster.nodes) == 1
+    assert Cluster.nodes == [ this_as_node() ]
   end
 
   test ".add_user" do
-    Cluster.register_node @node
-
-    assert :ok = Cluster.add_user @node["alias"], %User{}
+    assert :ok = Cluster.add_user Config.alias, %User{}
 
     [node] = Cluster.nodes
 
@@ -51,14 +59,12 @@ defmodule ChatApp.ClusterTest do
   end
 
   test ".remove_user" do
-    Cluster.register_node @node
-
-    :ok = Cluster.add_user @node["alias"], %User{}
+    :ok = Cluster.add_user Config.alias, %User{}
 
     [node] = Cluster.nodes
     assert node.users == %{42 => "John"}
 
-    Cluster.remove_user @node["alias"], 42
+    Cluster.remove_user Config.alias, 42
 
     [node] = Cluster.nodes
     assert node.users == %{}
@@ -66,13 +72,13 @@ defmodule ChatApp.ClusterTest do
 
   test ".clear" do
     Cluster.register_node @node
-    Cluster.register_node %{"alias" => "Jupiter", "address" => "localhost:4000"}
 
     assert Enum.count(Cluster.nodes) == 2
 
     Cluster.clear
 
-    assert Enum.count(Cluster.nodes) == 0
+    assert Enum.count(Cluster.nodes) == 1
+    assert Cluster.nodes == [ this_as_node() ]
   end
 
 end

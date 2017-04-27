@@ -45,6 +45,12 @@ defmodule ChatApp.ClusterConsumerTest do
     end
   end
 
+  def this_as_node do
+    %{alias: aliaz, address: address} = Config.this()
+
+    %Node{alias: aliaz, address: address}
+  end
+
   def purge_queues(aliases) do
     queues =
       aliases
@@ -104,7 +110,7 @@ defmodule ChatApp.ClusterConsumerTest do
 
     :timer.sleep(2 * 1000)
 
-    assert Cluster.nodes == [%Node{alias: "Jupiter", address: "milkyway", users: %{}}]
+    assert Cluster.nodes == [%Node{alias: "Jupiter", address: "milkyway", users: %{}}, this_as_node()]
     assert MessageTrace.content("cluster-consumer-unregister") |> String.contains?("Neptune")
   end
 

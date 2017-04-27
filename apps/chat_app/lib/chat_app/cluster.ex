@@ -35,10 +35,19 @@ defmodule ChatApp.Cluster do
 
   # Server Callbacks
 
-  def init(_), do: {:ok, %{}}
+  def init(_) do
+    # Put self in cluster.
+    {:ok, this_node()}
+  end
+
+  def this_node do
+    %{alias: aliaz, address: address} = Config.this()
+
+    Map.put(%{}, aliaz, %{address: address, users: %{}})
+  end
 
   def handle_call({:register_node, %{"alias" => aliaz, "address" => address}}, _from, nodes) do
-    case Map.has_key?(nodes, aliaz) || (aliaz == Config.alias()) do
+    case Map.has_key?(nodes, aliaz) do
       true ->
         {:reply, :node_exists, nodes}
 
@@ -71,7 +80,7 @@ defmodule ChatApp.Cluster do
   end
 
   def handle_cast({:clear}, _nodes) do
-    {:noreply, %{}}
+    {:noreply, this_node()}
   end
 
   def handle_cast({:remove_user, aliaz, user_id}, nodes) do
