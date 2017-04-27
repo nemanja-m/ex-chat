@@ -51,6 +51,7 @@ defmodule ChatApp.ClusterHandler do
 
   defp notify_cluster(node = %{"alias" => aliaz, "address" => _addr}) do
     available_nodes_for(aliaz)
+    |> Enum.reject(fn nod -> nod.alias == Config.alias() end)
     |> Enum.each(fn %{alias: receiver, address: _addr} ->
       publish_message(node, "REGISTER_NODE", receiver)
     end)
@@ -58,8 +59,8 @@ defmodule ChatApp.ClusterHandler do
 
   defp available_nodes_for(aliaz) do
     Cluster.nodes
-    |> Enum.reject(fn node -> [aliaz, Config.alias()] |> Enum.member?(node.alias) end)
-    |> Enum.map(fn (node) -> node |> Map.from_struct |> Map.drop([:users]) end)
+    |> Enum.reject(fn node -> node.alias == aliaz end)
+    |> Enum.map(fn node -> node |> Map.from_struct |> Map.drop([:users]) end)
   end
 
   defp publish_options(aliaz) do
