@@ -10,8 +10,6 @@ defmodule UserApp do
       supervisor(UserApp.Repo, []),
       # Start the endpoint when the application starts
       supervisor(UserApp.Endpoint, []),
-      # Start the RabbitMQ consumer
-      supervisor(UserApp.UserEventsConsumer, [])
     ]
 
     opts = [strategy: :one_for_one, name: UserApp.Supervisor]
