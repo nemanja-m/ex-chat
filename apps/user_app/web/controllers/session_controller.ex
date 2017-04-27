@@ -59,7 +59,7 @@ defmodule UserApp.SessionController do
 
     # Publish 'REMOVE_USER' message to master node. After that, master node will
     # publish message to the rest of nodes in cluster.
-    %{host: host, id: user.id}
+    %{alias: host.alias, id: user.id}
     |> publish_message("REMOVE_USER")
 
     User.host_changeset(user, %{host_id: nil})

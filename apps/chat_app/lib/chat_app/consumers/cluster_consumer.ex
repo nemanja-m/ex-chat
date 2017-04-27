@@ -27,6 +27,9 @@ defmodule ChatApp.ClusterConsumer do
       %{"type" => "ADD_USER", "payload" => %{"data" => data}} ->
         ClusterHandler.add_user(data)
 
+      %{"type" => "REMOVE_USER", "payload" => %{"alias" => aliaz, "id" => id}} ->
+        ClusterHandler.remove_user(aliaz, id)
+
         _ -> nil
     end
   end

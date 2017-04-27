@@ -37,6 +37,7 @@ defmodule ChatApp.ClusterHandler do
 
     if Config.is_master? do
       Cluster.nodes
+      |> Enum.reject(fn node -> Config.alias() == node.alias end)
       |> Enum.each(fn node ->
         publish_message(%{alias: aliaz}, "UNREGISTER_NODE", node.alias)
       end)
@@ -58,6 +59,20 @@ defmodule ChatApp.ClusterHandler do
 
       :node_missing ->
         Logger.error "Node with alias: '#{aliaz}' does not exist!"
+    end
+  end
+
+  def remove_user(aliaz, id) do
+    Cluster.remove_user aliaz, id
+
+    # TODO Update rooms via web sockets.
+
+    if Config.is_master? do
+      Cluster.nodes
+      |> Enum.reject(fn node -> Config.alias() == node.alias end)
+      |> Enum.each(fn node ->
+        publish_message(%{alias: aliaz, id: id}, "REMOVE_USER", node.alias)
+      end)
     end
   end
 
