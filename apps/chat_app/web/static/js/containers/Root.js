@@ -5,18 +5,16 @@ import Signup from './Signup';
 import Login from './Login';
 import AuthenticationRoute from '../components/AuthenticationRoute';
 import { ConnectedRouter } from 'react-router-redux';
-import { Socket } from 'phoenix';
+import { connectToSocket } from '../actions/session'
 
 class Root extends Component {
 
   componentDidMount() {
 
     // Connect to Phoenix web socket.
-    const { dispatch } = this.props;
-    const socket = new Socket('/socket');
-    socket.connect();
-
-    dispatch({ type: 'SOCKET_CONNECTED', socket });
+    if (!this.props.socket) {
+      this.props.connectToSocket();
+    }
   }
 
   render() {
@@ -53,8 +51,18 @@ class Root extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    currentUser: state.session.currentUser
+    currentUser: state.session.currentUser,
+    socket:      state.session.socket
   };
 };
 
-export default connect(mapStateToProps)(Root);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    connectToSocket: () => { dispatch(connectToSocket()); }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Root);

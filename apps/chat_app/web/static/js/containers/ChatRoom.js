@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PresentUsers from '../components/PresentUsers'
+import PresentUsers from '../components/PresentUsers';
+import { connectToRoomChannel } from '../actions/room';
 
 class ChatRoom extends Component {
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    const token = sessionStorage.getItem('ex-chat-token', token);
+    const { currentUser, connectToRoomChannel } = this.props;
 
-    dispatch({ type: 'CHAT_ROOM_ENTERED', token });
+    connectToRoomChannel(currentUser.id);
   }
 
   render() {
@@ -26,9 +26,18 @@ class ChatRoom extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    currentUser: state.session.currentUser,
+    currentUser:  state.session.currentUser,
     presentUsers: state.room.presentUsers
   };
 };
 
-export default connect(mapStateToProps)(ChatRoom);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    connectToRoomChannel: (userID) => { dispatch(connectToRoomChannel(userID)); }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ChatRoom);

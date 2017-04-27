@@ -2,14 +2,12 @@ import { combineReducers } from 'redux';
 import { reducer as form } from 'redux-form';
 import { routerReducer } from 'react-router-redux';
 import session from './session';
-import channels from './channels';
 import room from './room';
 
 const appReducer = combineReducers({
   routing: routerReducer,
   form,
   session,
-  channels,
   room
 });
 

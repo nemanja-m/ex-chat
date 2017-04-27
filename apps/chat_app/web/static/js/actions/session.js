@@ -1,5 +1,6 @@
 import { push } from 'react-router-redux';
 import { reset } from 'redux-form';
+import { Socket } from 'phoenix';
 
 function setCurrentUser(dispatch, response) {
   const { token, user, users } = response.data;
@@ -9,9 +10,18 @@ function setCurrentUser(dispatch, response) {
   dispatch({ type: 'SET_ACTIVE_USERS', users });
 }
 
+export function connectToSocket() {
+  return (dispatch) => {
+    const socket = new Socket('/socket');
+    socket.connect();
+
+    dispatch({ type: 'SOCKET_CONNECTED', socket });
+  };
+}
+
 export function login(data) {
   return (dispatch, getState) => {
-    const socket = getState().channels.socket;
+    const socket = getState().session.socket;
     const channel = socket.channel('sessions:new');
 
     channel

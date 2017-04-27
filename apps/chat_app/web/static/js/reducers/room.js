@@ -1,5 +1,6 @@
 const initialState = {
-  presentUsers: []
+  presentUsers: [],
+  channel: null
 };
 
 const reduce = (state = initialState, action) => {
@@ -8,7 +9,14 @@ const reduce = (state = initialState, action) => {
 
     case 'SET_ACTIVE_USERS':
       return {
+        ...state,
         presentUsers: action.users
+      };
+
+    case 'SET_ROOM_CHANNEL':
+      return {
+        ...state,
+        channel: action.channel
       };
 
     default:

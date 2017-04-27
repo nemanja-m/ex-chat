@@ -2,7 +2,7 @@ import { push } from 'react-router-redux';
 
 export function signup(data) {
   return (dispatch, getState) => {
-    const socket = getState().channels.socket;
+    const socket = getState().session.socket;
     const channel = socket.channel('registrations:new');
 
     channel
