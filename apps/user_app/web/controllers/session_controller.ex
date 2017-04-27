@@ -1,7 +1,7 @@
 defmodule UserApp.SessionController do
   use UserApp.Web, :controller
 
-  alias UserApp.{Auth, User, Repo}
+  alias UserApp.{Auth, User, Repo, Host}
 
   def index(conn, _params) do
     users =
@@ -27,7 +27,7 @@ defmodule UserApp.SessionController do
     |> Guardian.revoke!
 
     conn
-    |> delete_host_from_user
+    |> handle_logout
     |> put_status(:ok)
     |> render("delete.json", success: true)
   end
@@ -53,8 +53,14 @@ defmodule UserApp.SessionController do
     |> render("error.json", reason: "User does not exist")
   end
 
-  defp delete_host_from_user(conn) do
+  defp handle_logout(conn) do
     user = Guardian.Plug.current_resource(conn)
+    host = Repo.get(Host, user.host_id)
+
+    # Publish 'REMOVE_USER' message to master node. After that, master node will
+    # publish message to the rest of nodes in cluster.
+    %{host: host, id: user.id}
+    |> publish_message("REMOVE_USER")
 
     User.host_changeset(user, %{host_id: nil})
     |> Repo.update!
@@ -65,23 +71,31 @@ defmodule UserApp.SessionController do
   # Publish message to master's exchange. After master ChatApp receives
   # this message, it will publish 'ADD_USER' message to rest of the cluster.
   defp notify_master_node({conn, :ok, user}) do
-    master_alias = Application.get_env(:user_app, :master_alias)
-
-    options = %{
-      url: Application.get_env(:user_app, :rabbitmq_url),
-      exchange: "#{String.downcase(master_alias)}-exchange",
-      routing_key: "cluster-event"
-    }
-
-    message = %{
-      type: "ADD_USER",
-      payload: UserApp.UserView.render("show.json", user: user)
-    }
-
-    Tackle.publish(Poison.encode!(message), options)
+    UserApp.UserView.render("show.json", user: user)
+    |> publish_message("ADD_USER")
 
     {conn, :ok, user}
   end
   defp notify_master_node(params), do: params
 
+  defp publish_message(payload, type) do
+    options = %{
+      url: Application.get_env(:user_app, :rabbitmq_url),
+      exchange: master_exchange(),
+      routing_key: "cluster-event"
+    }
+
+    message = %{
+      type: type,
+      payload: payload
+    }
+
+    Tackle.publish(Poison.encode!(message), options)
+  end
+
+  defp master_exchange do
+    master_alias = Application.get_env(:user_app, :master_alias)
+
+    "#{String.downcase(master_alias)}-exchange"
+  end
 end
