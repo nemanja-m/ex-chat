@@ -1,5 +1,5 @@
 defmodule ChatApp.ClusterTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   alias ChatApp.{Cluster, Node, User, Config}
 

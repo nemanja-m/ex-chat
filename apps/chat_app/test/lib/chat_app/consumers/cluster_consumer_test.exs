@@ -5,12 +5,11 @@ defmodule ChatApp.ClusterConsumerTest do
 
   @options %{
     url: Application.get_env(:chat_app, :rabbitmq_url),
-    exchange: "mars-exchange",
+    exchange: Config.master_exchange,
     routing_key: "cluster-event"
   }
 
-  defmodule NeptuneConsumer do
-    use Tackle.Consumer,
+  defmodule NeptuneConsumer do use Tackle.Consumer,
       url: Application.get_env(:chat_app, :rabbitmq_url),
       exchange: "neptune-exchange",
       routing_key: "cluster-event",
