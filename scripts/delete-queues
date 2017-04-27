@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+rabbitmqadmin list queues name | awk '{print $2}' | xargs -I qn rabbitmqadmin delete queue name=qn
