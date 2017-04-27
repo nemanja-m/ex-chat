@@ -11,9 +11,10 @@ defmodule ChatApp.ClusterHandler do
     case Cluster.register_node(node) do
       :ok ->
         update_cluster(node, Config.is_master?)
+        Logger.info "Node '#{node["alias"]}' registered to cluster."
 
       :node_exists ->
-        Logger.error "Node with alias: '#{node["alias"]}' already exists"
+        Logger.error "Node '#{node["alias"]}' already exists."
     end
   end
 
@@ -42,6 +43,8 @@ defmodule ChatApp.ClusterHandler do
         publish_message(%{alias: aliaz}, "UNREGISTER_NODE", node.alias)
       end)
     end
+
+    Logger.warn "Node '#{aliaz}' unregistered from cluster."
   end
 
   @doc """
@@ -57,22 +60,26 @@ defmodule ChatApp.ClusterHandler do
         # Publish 'ADD_USER' message to other nodes when current node is master.
         notify_cluster_for_new_user(user, Config.is_master?)
 
+        Logger.info "User '#{username}' logged in @#{aliaz}."
+
       :node_missing ->
-        Logger.error "Node with alias: '#{aliaz}' does not exist!"
+        Logger.error "Node '#{aliaz}' does not exist!"
     end
   end
 
   def remove_user(aliaz, id) do
-    Cluster.remove_user aliaz, id
+    case Cluster.remove_user(aliaz, id) do
+      {:ok, %{id: _id, username: username}} ->
+        # TODO Update rooms via web sockets.
 
-    # TODO Update rooms via web sockets.
+        notify_cluster_for_removed_user(aliaz, id, Config.is_master?)
+        Logger.warn "User '#{username}' logged out @#{aliaz}."
 
-    if Config.is_master? do
-      Cluster.nodes
-      |> Enum.reject(fn node -> Config.alias() == node.alias end)
-      |> Enum.each(fn node ->
-        publish_message(%{alias: aliaz, id: id}, "REMOVE_USER", node.alias)
-      end)
+      {:error, :user_not_found} ->
+        Logger.error "User #{id} not found @#{aliaz}."
+
+      {:error, :node_not_found} ->
+        Logger.error "Node @#{aliaz} not found."
     end
   end
 
@@ -147,5 +154,14 @@ defmodule ChatApp.ClusterHandler do
     end)
   end
   defp notify_cluster_for_new_user(_, false), do: nil
+
+  defp notify_cluster_for_removed_user(aliaz, id, true) do
+    Cluster.nodes
+    |> Enum.reject(fn node -> Config.alias() == node.alias end)
+    |> Enum.each(fn node ->
+      publish_message(%{alias: aliaz, id: id}, "REMOVE_USER", node.alias)
+    end)
+  end
+  defp notify_cluster_for_removed_user(_, _, false), do: nil
 
 end
