@@ -15,7 +15,15 @@ export function connectToRoomChannel(userID) {
     dispatch({ type: 'SOCKET_CONNECTED', socket });
 
     // Connect user to room channel.
-    const channel = socket.channel(`room:${userID}`);
+    const channel = socket.channel('room:lobby');
+
+    channel.on('user:login', (user) => {
+      dispatch({ type: 'USER_ENTERED_ROOM', user });
+    });
+
+    channel.on('user:logout', (user) => {
+      dispatch({ type: 'USER_LEFT_ROOM', user });
+    });
 
     channel
       .join()

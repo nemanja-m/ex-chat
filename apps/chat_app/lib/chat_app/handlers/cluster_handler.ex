@@ -55,7 +55,7 @@ defmodule ChatApp.ClusterHandler do
 
     case Cluster.add_user(aliaz, %User{id: id, username: username}) do
       :ok ->
-        # TODO Update rooms via web sockets.
+        ChatApp.Endpoint.broadcast! "room:lobby", "user:login", %{id: id, username: username}
 
         # Publish 'ADD_USER' message to other nodes when current node is master.
         notify_cluster_for_new_user(user, Config.is_master?)
@@ -70,7 +70,7 @@ defmodule ChatApp.ClusterHandler do
   def remove_user(aliaz, id) do
     case Cluster.remove_user(aliaz, id) do
       {:ok, %{id: _id, username: username}} ->
-        # TODO Update rooms via web sockets.
+        ChatApp.Endpoint.broadcast! "room:lobby", "user:logout", %{id: id, username: username}
 
         notify_cluster_for_removed_user(aliaz, id, Config.is_master?)
         Logger.warn "User '#{username}' logged out @#{aliaz}."

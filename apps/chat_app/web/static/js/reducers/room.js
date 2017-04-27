@@ -19,6 +19,20 @@ const reduce = (state = initialState, action) => {
         channel: action.channel
       };
 
+    case 'USER_ENTERED_ROOM':
+      return {
+        ...state,
+        presentUsers: [...state.presentUsers, action.user]
+      };
+
+    case 'USER_LEFT_ROOM':
+      const users = state.presentUsers.filter((user) => { user.id !== action.user.id });
+
+      return {
+        ...state,
+        presentUsers: users
+      };
+
     default:
       return state;
   }

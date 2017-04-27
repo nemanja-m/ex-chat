@@ -3,7 +3,7 @@ defmodule ChatApp.RoomChannel do
 
   alias ChatApp.UserAppClient
 
-  def join("room:new", _message, socket) do
+  def join("room:lobby", _message, socket) do
     {:ok, socket}
   end
 
@@ -13,7 +13,8 @@ defmodule ChatApp.RoomChannel do
     token = socket.assigns.token
 
     UserAppClient.logout(token)
-    :ok
+
+    {:ok, socket}
   end
 
 end
