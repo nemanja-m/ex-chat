@@ -75,7 +75,7 @@ defmodule UserApp.SessionController do
 
     message = %{
       type: "ADD_USER",
-      payload: user
+      payload: UserApp.UserView.render("show.json", user: user)
     }
 
     Tackle.publish(Poison.encode!(message), options)

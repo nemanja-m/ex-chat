@@ -47,6 +47,9 @@ defmodule ChatApp.ClusterConsumer do
       end)
     end
   end
+  defp process_message(%{"type" => "ADD_USER", "payload" => %{"data" => data}}) do
+    ClusterHandler.add_user(data)
+  end
   defp process_message(_message), do: nil
 
 end

@@ -1,6 +1,7 @@
 defmodule ChatApp.ClusterHandler do
+  require Logger
 
-  alias ChatApp.{Config, Cluster}
+  alias ChatApp.{Config, Cluster, User}
 
   @doc """
   Returns exhange name for given node's alias.
@@ -28,6 +29,20 @@ defmodule ChatApp.ClusterHandler do
     notify_cluster(node)
   end
   def update_cluster(_params, false), do: nil
+
+  def add_user(user = %{"host" => host, "id" => id, "username" => username}) do
+    %{"alias" => aliaz, "address" => _addr} = host
+
+    case Cluster.add_user(aliaz, %User{id: id, username: username}) do
+      :ok ->
+        # TODO Update rooms via web sockets.
+
+        notify_cluster_for_new_user(user, Config.is_master?)
+
+      :node_missing ->
+        Logger.error "Node with alias: '#{aliaz}' does not exist!"
+    end
+  end
 
   @doc """
   Publish messages with specific type and payload to the
@@ -57,7 +72,10 @@ defmodule ChatApp.ClusterHandler do
     end)
   end
 
-  defp available_nodes_for(aliaz) do
+  @doc """
+  Returns all nodes in cluster except for input node.
+  """
+  def available_nodes_for(aliaz) do
     Cluster.nodes
     |> Enum.reject(fn node -> node.alias == aliaz end)
     |> Enum.map(fn node -> node |> Map.from_struct |> Map.drop([:users]) end)
@@ -70,5 +88,17 @@ defmodule ChatApp.ClusterHandler do
       routing_key: "cluster-event"
     }
   end
+
+  @doc """
+  Publish 'ADD_USER' message to other nodes when current node is master.
+  """
+  defp notify_cluster_for_new_user(user, true) do
+    Cluster.nodes
+    |> Enum.reject(fn node -> node.alias == Config.alias() end)
+    |> Enum.each(fn node ->
+      publish_message(%{data: user}, "ADD_USER", node.alias)
+    end)
+  end
+  defp notify_cluster_for_new_user(_, false), do: nil
 
 end
