@@ -1,6 +1,7 @@
 const initialState = {
   presentUsers: [],
-  channel: null
+  channel: null,
+  messages: []
 };
 
 const reduce = (state = initialState, action) => {

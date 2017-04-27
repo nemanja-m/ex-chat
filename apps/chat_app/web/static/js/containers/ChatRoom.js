@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PresentUsers from '../components/PresentUsers';
 import { connectToRoomChannel } from '../actions/room';
+import UserList from '../components/UserList';
+import MessageForm from '../components/MessageForm';
+import MessageList from '../components/MessageList';
 
 class ChatRoom extends Component {
 
@@ -15,10 +17,20 @@ class ChatRoom extends Component {
     const { currentUser, presentUsers } = this.props;
 
     return (
-      <div>
-        <h1>Hello <strong>{currentUser.username}</strong> </h1>
+      <div style={{ display: 'flex', height: '100vh', flex: '1' }}>
+        <UserList
+          currentUser={currentUser}
+          presentUsers={presentUsers}
+        />
 
-        <PresentUsers users={presentUsers}/>
+        <div style={{ display: 'flex', flexDirection: 'column', flex: '1' }}>
+          <MessageList
+            messages={this.props.messages}
+            ref={(c) => { this.messageList = c; }}
+          />
+
+          <MessageForm onSubmit={() => {}} />
+        </div>
       </div>
     );
   }
@@ -27,7 +39,8 @@ class ChatRoom extends Component {
 const mapStateToProps = (state) => {
   return {
     currentUser:  state.session.currentUser,
-    presentUsers: state.room.presentUsers
+    presentUsers: state.room.presentUsers,
+    messages:     state.room.messages
   };
 };
 
