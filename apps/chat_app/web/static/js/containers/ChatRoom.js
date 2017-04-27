@@ -12,13 +12,13 @@ class ChatRoom extends Component {
   }
 
   render() {
-    const { currentUser } = this.props;
+    const { currentUser, presentUsers } = this.props;
 
     return (
       <div>
         <h1>Hello <strong>{currentUser.username}</strong> </h1>
 
-        <PresentUsers />
+        <PresentUsers users={presentUsers}/>
       </div>
     );
   }
@@ -26,7 +26,8 @@ class ChatRoom extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    currentUser: state.session.currentUser
+    currentUser: state.session.currentUser,
+    presentUsers: state.room.presentUsers
   };
 };
 

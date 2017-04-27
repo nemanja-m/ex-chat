@@ -101,7 +101,10 @@ defmodule ChatApp.Cluster do
   def handle_call({:users}, _from, nodes) do
     users =
       nodes
-      |> Enum.map(fn {_aliaz, %{address: _addr, users: users}} -> Map.values(users) end)
+      |> Enum.map(fn {_aliaz, %{address: _addr, users: users}} -> users end)
+      |> Enum.map(fn users ->
+        Enum.map(users, fn {id, username} -> %User{id: id, username: username} end)
+      end)
       |> Enum.concat
 
     {:reply, users, nodes}

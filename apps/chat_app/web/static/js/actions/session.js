@@ -2,10 +2,11 @@ import { push } from 'react-router-redux';
 import { reset } from 'redux-form';
 
 function setCurrentUser(dispatch, response) {
-  const { token, user } = response.data;
+  const { token, user, users } = response.data;
   sessionStorage.setItem('ex-chat-token', token);
 
   dispatch({ type: 'USER_LOGGED_IN', user });
+  dispatch({ type: 'SET_ACTIVE_USERS', users });
 }
 
 export function login(data) {

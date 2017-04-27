@@ -1,7 +1,7 @@
 defmodule ChatApp.UserAppClient do
   require Logger
 
-  alias ChatApp.Config
+  alias ChatApp.{Config, Cluster, User}
 
   @moduledoc """
   Client module that handles user actions such as register, login, logout.
@@ -14,10 +14,23 @@ defmodule ChatApp.UserAppClient do
   end
 
   def login(user, socket_reference) do
-    response = request(:login, user)
+    response =
+      request(:login, user)
+      |> add_active_users_for(user)
 
     Phoenix.Channel.reply socket_reference, response
   end
+
+  defp add_active_users_for({:ok, response}, user) do
+    users=
+      Cluster.users
+      |> Enum.reject(fn %User{username: username} -> username == user["username"] end)
+
+    new_data = Map.put(response["data"], "users", users)
+
+    {:ok, response |> Map.put("data", new_data)}
+  end
+  defp add_active_users_for({:error, response}, _user), do: {:error, response}
 
   def logout(token) do
     headers = [
