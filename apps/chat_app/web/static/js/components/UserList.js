@@ -8,13 +8,12 @@ const styles = {
   },
 
   header: {
-    padding: '20px 15px',
+    padding: '20px 25px',
     marginBottom: '10px',
     color: 'white',
-    width: '280px',
-    fontSize: '24px',
+    width: '260px',
+    fontSize: '28px',
     fontWeight: 'bold',
-    textAlign: 'center'
   },
 
   userList: {
@@ -84,7 +83,10 @@ class UserList extends Component {
     return (
       <div style={ styles.roomSidebar }>
         <div style={ styles.header }>
-          ex |> chat
+          <span>
+            <img src="images/phoenix.png" />
+            &nbsp; ex |> chat
+          </span>
         </div>
 
         <div style={ styles.listHeading }>

@@ -5,7 +5,7 @@ const showMessage = (content, sender, receiver, fromCurrentUser) => {
   if (receiver) {
     return (
       <span>
-        <strong className="text-success">[PRIVATE]: </strong>
+        <strong className="text-success">[PRIVATE] &nbsp;</strong>
         {sender.username}
       </span>
     );
