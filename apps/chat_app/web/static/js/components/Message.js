@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 
 const showMessage = (content, sender, receiver, fromCurrentUser) => {
   if (receiver) {
@@ -20,6 +21,9 @@ const Message = ({ message: { content, date, sender, receiver }, fromCurrentUser
         <b style={{ marginRight: '8px', fontSize: '14px' }}>
           { showMessage(content, sender, receiver, fromCurrentUser) }
         </b>
+        <time style={{ fontSize: '12px', color: 'rgb(192,192,192)' }}>
+          {moment(date).format('h:mm A')}
+        </time>
       </div>
       <div>{content}</div>
     </div>
