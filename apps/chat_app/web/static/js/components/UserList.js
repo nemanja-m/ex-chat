@@ -4,13 +4,14 @@ const styles = {
   roomSidebar: {
     color: '#ab9ba9',
     background: '#4d394b',
+    border: '2px solid #2c212d'
   },
 
   header: {
     padding: '20px 15px',
     marginBottom: '10px',
     color: 'white',
-    width: '220px',
+    width: '280px',
     fontSize: '20px',
     fontWeight: 'bold',
     textAlign: 'center'
@@ -38,6 +39,31 @@ const styles = {
     fontSize: '13px',
     textTransform: 'uppercase',
   },
+
+  logoutButton: {
+    padding: '0',
+    background: 'transparent',
+    border: '0',
+    cursor: 'pointer',
+  },
+
+  logoutContainer: {
+    position: 'absolute',
+    left: '15px',
+    bottom: '10px'
+  },
+
+  badge: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '45px',
+    height: '45px',
+    margin: '12px auto',
+    fontSize: '20px',
+    background: 'rgba(255,255,255,.2)',
+    borderRadius: '5px',
+  }
 };
 
 const User = ({ username }) =>
@@ -53,7 +79,7 @@ class UserList extends Component {
   }
 
   render() {
-    const { currentUser, presentUsers, logout } = this.props;
+    const { currentUser, presentUsers, onLogoutClick } = this.props;
 
     return (
       <div style={ styles.roomSidebar }>
@@ -69,6 +95,14 @@ class UserList extends Component {
 
           {this._renderActiveUsers()}
         </ul>
+
+        <div style={ styles.logoutContainer }>
+          <button onClick={ onLogoutClick } style={ styles.logoutButton } >
+            <div style={styles.badge}>
+              <span className="fa fa-sign-out" />
+            </div>
+          </button>
+        </div>
       </div>
     );
   }

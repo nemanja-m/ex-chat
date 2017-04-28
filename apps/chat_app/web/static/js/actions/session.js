@@ -42,3 +42,12 @@ export function login(data) {
       });
   };
 }
+
+export function logout() {
+  return (dispatch, getState) => {
+    sessionStorage.removeItem('ex-chat-token');
+    getState().session.socket.disconnect();
+
+    dispatch({ type: 'LOGOUT' });
+  };
+}

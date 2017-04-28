@@ -7,6 +7,7 @@ import {
   connectToRoomChannel,
   createMessage
 } from '../actions/room';
+import { logout } from '../actions/session';
 
 class ChatRoom extends Component {
 
@@ -21,13 +22,14 @@ class ChatRoom extends Component {
   }
 
   render() {
-    const { currentUser, presentUsers, messages } = this.props;
+    const { currentUser, presentUsers, messages, onLogoutClick } = this.props;
 
     return (
       <div style={{ display: 'flex', height: '100vh', flex: '1' }}>
         <UserList
           currentUser={currentUser}
           presentUsers={presentUsers}
+          onLogoutClick={onLogoutClick}
         />
 
         <div style={{ display: 'flex', flexDirection: 'column', flex: '1' }}>
@@ -55,7 +57,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     connectToRoomChannel: (userID) => { dispatch(connectToRoomChannel(userID)); },
-    createMessage: (channel, data) => { dispatch(createMessage(channel, data)); }
+    createMessage: (channel, data) => { dispatch(createMessage(channel, data)); },
+    onLogoutClick: () => { dispatch(logout()); }
   };
 };
 
