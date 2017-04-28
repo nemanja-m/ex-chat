@@ -11,8 +11,9 @@ const styles = {
     marginBottom: '10px',
     color: 'white',
     width: '220px',
-    fontSize: '18px',
+    fontSize: '20px',
     fontWeight: 'bold',
+    textAlign: 'center'
   },
 
   userList: {
@@ -52,7 +53,7 @@ class UserList extends Component {
   }
 
   render() {
-    const { currentUser, presentUsers } = this.props;
+    const { currentUser, presentUsers, logout } = this.props;
 
     return (
       <div style={ styles.roomSidebar }>
@@ -64,7 +65,7 @@ class UserList extends Component {
           Active Users
         </div>
         <ul style={ styles.userList }>
-          <User key={currentUser.id} username={currentUser.username} />
+          <User key={currentUser.id} username={`${currentUser.username} (you)`} />
 
           {this._renderActiveUsers()}
         </ul>
