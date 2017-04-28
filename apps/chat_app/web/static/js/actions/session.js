@@ -38,7 +38,7 @@ export function login(data) {
             dispatch(reset('login'));
             dispatch(push('/'));
           })
-          .receive('error', (response) => { console.log(response) });
+          .receive('error', (response) => { alert(response.error); });
       });
   };
 }

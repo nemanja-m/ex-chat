@@ -17,7 +17,21 @@ export function signup(data) {
             // Redirect to login page after successful signup.
             dispatch(push('/login'));
           })
-          .receive('error', (response) => { console.log(response) });
+          .receive('error', (response) => {
+            var errorMessage = [];
+
+            if (response.errors.password) {
+              errorMessage.push(`Password ${response.errors.password}`);
+            }
+
+            if (response.errors.username) {
+              errorMessage.push(`Username ${response.errors.username}`);
+            }
+
+            if (errorMessage.length > 0) {
+              alert(errorMessage.join('\r\n'));
+            }
+          });
       });
   };
 }
