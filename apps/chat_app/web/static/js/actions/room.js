@@ -1,4 +1,5 @@
 import { Socket } from 'phoenix';
+import { reset } from 'redux-form';
 
 export function connectToRoomChannel(userID) {
   return (dispatch, getState) => {
@@ -32,5 +33,16 @@ export function connectToRoomChannel(userID) {
 
         dispatch({ type: 'SET_ROOM_CHANNEL', channel });
       });
+  };
+}
+
+export function createMessage(channel, data) {
+  return (dispatch) => {
+    channel
+      .push('message:public', data)
+      .receive('ok', () => {
+        dispatch(reset('messageForm'));
+      })
+      .receive('error', (error) => { console.log(error); })
   };
 }

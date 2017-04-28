@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { connectToRoomChannel } from '../actions/room';
 import UserList from '../components/UserList';
 import MessageForm from '../components/MessageForm';
 import MessageList from '../components/MessageList';
+import {
+  connectToRoomChannel,
+  createMessage
+} from '../actions/room';
 
 class ChatRoom extends Component {
 
@@ -11,6 +14,10 @@ class ChatRoom extends Component {
     const { currentUser, connectToRoomChannel } = this.props;
 
     connectToRoomChannel(currentUser.id);
+  }
+
+  handleMessageCreate(data) {
+    this.props.createMessage(this.props.channel, data);
   }
 
   render() {
@@ -24,12 +31,8 @@ class ChatRoom extends Component {
         />
 
         <div style={{ display: 'flex', flexDirection: 'column', flex: '1' }}>
-          <MessageList
-            messages={this.props.messages}
-            ref={(c) => { this.messageList = c; }}
-          />
-
-          <MessageForm onSubmit={() => {}} />
+          <MessageList messages={this.props.messages} />
+          <MessageForm onSubmit={(data) => this.handleMessageCreate(data)} />
         </div>
       </div>
     );
@@ -40,13 +43,15 @@ const mapStateToProps = (state) => {
   return {
     currentUser:  state.session.currentUser,
     presentUsers: state.room.presentUsers,
-    messages:     state.room.messages
+    messages:     state.room.messages,
+    channel:      state.room.channel
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    connectToRoomChannel: (userID) => { dispatch(connectToRoomChannel(userID)); }
+    connectToRoomChannel: (userID) => { dispatch(connectToRoomChannel(userID)); },
+    createMessage: (channel, data) => { dispatch(createMessage(channel, data)); }
   };
 };
 
