@@ -69,8 +69,8 @@ export function createMessage(channel, payload) {
     const tokens = text.split("|>");
 
     if (tokens.length === 2) {
-      message.receiver = tokens[0].trim();
-      message.content  = tokens[1].trim();
+      message.content = tokens[0].trim();
+      message.receiver = tokens[1].trim();
 
       messageType = "private";
     }
