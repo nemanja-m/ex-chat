@@ -19,7 +19,7 @@ class MessageList extends Component {
       <Message
         key={message.id}
         message={message}
-        fromCurrentUser={message.user.username == currentUser.username}
+        fromCurrentUser={message.sender.username == currentUser.username}
       />
     );
   }

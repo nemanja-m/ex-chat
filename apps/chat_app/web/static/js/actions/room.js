@@ -27,6 +27,16 @@ export function connectToRoomChannel(userID) {
     });
 
     channel.on('message:new', (message) => {
+
+      const currentUser = getState().session.currentUser;
+
+      if (message.receiver &&
+          message.receiver !== currentUser.username) {
+        return;
+      }
+
+      console.log(message);
+
       dispatch({ type: 'NEW_MESSAGE', message })
     });
 
@@ -44,16 +54,29 @@ export function createMessage(channel, payload) {
   return (dispatch, getState) => {
     const currentUser = getState().session.currentUser;
     const id = `${ (currentUser.id).toString(16) }:${ Date.now() }`;
+    const text = payload.text;
 
-    const message = {
+    var messageType = "public";
+    var message = {
       id,
-      content: payload.text,
+      content: text,
       date: Date.now(),
-      user: currentUser
+      sender: currentUser,
+      receiver: null
     };
 
+
+    const tokens = text.split("|>");
+
+    if (tokens.length === 2) {
+      message.receiver = tokens[0].trim();
+      message.content  = tokens[1].trim();
+
+      messageType = "private";
+    }
+
     channel
-      .push('message:public', message)
+      .push(`message:${ messageType }`, message)
       .receive('ok', () => {
         dispatch(reset('messageForm'));
       })

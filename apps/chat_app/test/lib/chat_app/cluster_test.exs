@@ -97,4 +97,13 @@ defmodule ChatApp.ClusterTest do
     assert Cluster.nodes == [ this_as_node() ]
   end
 
+  test ".find_node" do
+    :ok = Cluster.add_user Config.alias, %User{id: 1, username: "Chuck"}
+    :ok = Cluster.add_user Config.alias, %User{id: 2, username: "Borris"}
+    :ok = Cluster.add_user Config.alias, %User{id: 3, username: "John"}
+
+    assert Cluster.find_node("Chuck") == Config.alias()
+    assert Cluster.find_node("Mack") == nil
+  end
+
 end

@@ -1,5 +1,6 @@
 defmodule ChatApp.MessageHandler do
   alias ChatApp.Cluster
+  require Logger
 
   def send_public(message) do
     nodes
@@ -7,6 +8,18 @@ defmodule ChatApp.MessageHandler do
   end
 
   def send_private(message) do
+    node =
+      message["receiver"]
+      |> Cluster.find_node
+
+      case node do
+        nil ->
+          Logger.error "#{message["receiver"]} not found."
+
+        aliaz ->
+          publish_message(node, message)
+          Logger.warn "Sending message to #{message["receiver"]}@#{node}."
+      end
   end
 
   defp nodes do
