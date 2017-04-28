@@ -4,7 +4,7 @@ import Message from './Message';
 const styles = {
   container: {
     flex: '1',
-    padding: '10px 10px 0 10px',
+    padding: '1rem 7rem 0 7rem',
     background: '#fff',
     overflowY: 'auto',
   },
