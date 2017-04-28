@@ -35,8 +35,6 @@ export function connectToRoomChannel(userID) {
         return;
       }
 
-      console.log(message);
-
       dispatch({ type: 'NEW_MESSAGE', message })
     });
 

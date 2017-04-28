@@ -19,6 +19,7 @@ class ChatRoom extends Component {
 
   handleMessageCreate(data) {
     this.props.createMessage(this.props.channel, data);
+    this.messageList._scrollToBottom();
   }
 
   render() {
@@ -36,6 +37,7 @@ class ChatRoom extends Component {
           <MessageList
             messages={messages}
             currentUser={currentUser}
+            ref={(c) => { this.messageList = c; }}
           />
 
           <MessageForm onSubmit={(data) => this.handleMessageCreate(data)} />

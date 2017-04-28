@@ -12,6 +12,25 @@ const styles = {
 
 class MessageList extends Component {
 
+  componentWillReceiveProps(nextProps) {
+
+    // If we get new message.
+    if (nextProps.messages.length > this.props.messages.length) {
+
+      // Don't scroll down if iser is already scrolled to top by 100
+      if (this.container.scrollHeight - this.container.scrollTop <
+        this.container.clientHeight + 100) {
+
+        this._scrollToBottom();
+      }
+    }
+  }
+
+  _scrollToBottom() {
+    // Scroll to bottom after 120 ms.
+    setTimeout(() => { this.container.scrollTop = this.container.scrollHeight; }, 120);
+  }
+
   _renderMessages() {
     const { messages, currentUser } = this.props;
 
