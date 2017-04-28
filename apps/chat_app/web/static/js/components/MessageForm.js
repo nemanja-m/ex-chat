@@ -28,6 +28,7 @@ class MessageForm extends Component {
           />
           <div className="input-group-btn">
             <button
+              disabled={this.props.invalid}
               className="btn btn-success"
               style={styles.button}
             >
@@ -40,4 +41,15 @@ class MessageForm extends Component {
   }
 }
 
-export default reduxForm({ form: 'messageForm' })(MessageForm);
+const validate = (values) => {
+  const errors = {};
+  if (!values.text) {
+    errors.text = 'Required';
+  }
+  return errors;
+};
+
+export default reduxForm({
+  form: 'messageForm',
+  validate
+})(MessageForm);
