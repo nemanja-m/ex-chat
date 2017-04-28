@@ -13,8 +13,14 @@ const styles = {
 class MessageList extends Component {
 
   _renderMessages() {
-    return this.props.messages.map((message) =>
-      <Message key={message.id} message={message} />
+    const { messages, currentUser } = this.props;
+
+    return messages.map((message) =>
+      <Message
+        key={message.id}
+        message={message}
+        fromCurrentUser={message.user.username == currentUser.username}
+      />
     );
   }
 

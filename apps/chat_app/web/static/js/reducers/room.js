@@ -34,6 +34,12 @@ const reduce = (state = initialState, action) => {
         presentUsers: users
       };
 
+    case 'NEW_MESSAGE':
+      return {
+        ...state,
+        messages: [...state.messages, action.message]
+      };
+
     default:
       return state;
   }

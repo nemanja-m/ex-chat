@@ -21,7 +21,7 @@ class ChatRoom extends Component {
   }
 
   render() {
-    const { currentUser, presentUsers } = this.props;
+    const { currentUser, presentUsers, messages } = this.props;
 
     return (
       <div style={{ display: 'flex', height: '100vh', flex: '1' }}>
@@ -31,7 +31,11 @@ class ChatRoom extends Component {
         />
 
         <div style={{ display: 'flex', flexDirection: 'column', flex: '1' }}>
-          <MessageList messages={this.props.messages} />
+          <MessageList
+            messages={messages}
+            currentUser={currentUser}
+          />
+
           <MessageForm onSubmit={(data) => this.handleMessageCreate(data)} />
         </div>
       </div>

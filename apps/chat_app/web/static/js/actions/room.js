@@ -26,6 +26,10 @@ export function connectToRoomChannel(userID) {
       dispatch({ type: 'USER_LEFT_ROOM', user });
     });
 
+    channel.on('message:new', (message) => {
+      dispatch({ type: 'NEW_MESSAGE', message })
+    });
+
     channel
       .join()
       .receive('ok', () => {
@@ -36,10 +40,20 @@ export function connectToRoomChannel(userID) {
   };
 }
 
-export function createMessage(channel, data) {
-  return (dispatch) => {
+export function createMessage(channel, payload) {
+  return (dispatch, getState) => {
+    const currentUser = getState().session.currentUser;
+    const id = `${ (currentUser.id).toString(16) }:${ Date.now() }`;
+
+    const message = {
+      id,
+      content: payload.text,
+      date: Date.now(),
+      user: currentUser
+    };
+
     channel
-      .push('message:public', data)
+      .push('message:public', message)
       .receive('ok', () => {
         dispatch(reset('messageForm'));
       })

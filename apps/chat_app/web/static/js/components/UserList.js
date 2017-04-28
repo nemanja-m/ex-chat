@@ -39,15 +39,16 @@ const styles = {
   },
 };
 
-const User = ({ id, username }) =>
-  <li key={id} className="online-user" style={ styles.username }>
+const User = ({ username }) =>
+  <li className="online-user" style={ styles.username }>
     {username}
   </li>;
 
 class UserList extends Component {
 
   _renderActiveUsers() {
-    return this.props.presentUsers.map((user) => <User props={user} />);
+    return this.props.presentUsers.map((user) =>
+      <User key={user.id} username={user.username} />);
   }
 
   render() {
@@ -63,7 +64,7 @@ class UserList extends Component {
           Active Users
         </div>
         <ul style={ styles.userList }>
-          <User id={currentUser.id} username={currentUser.username} />
+          <User key={currentUser.id} username={currentUser.username} />
 
           {this._renderActiveUsers()}
         </ul>

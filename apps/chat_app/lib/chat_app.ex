@@ -8,7 +8,8 @@ defmodule ChatApp do
     children = [
       supervisor(ChatApp.Endpoint, []),
       worker(ChatApp.Cluster, []),
-      worker(ChatApp.ClusterConsumer, [])
+      worker(ChatApp.ClusterConsumer, []),
+      worker(ChatApp.MessageConsumer, [])
     ]
 
     opts = [strategy: :one_for_one, name: ChatApp.Supervisor]
