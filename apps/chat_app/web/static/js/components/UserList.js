@@ -12,7 +12,7 @@ const styles = {
     marginBottom: '10px',
     color: 'white',
     width: '280px',
-    fontSize: '20px',
+    fontSize: '24px',
     fontWeight: 'bold',
     textAlign: 'center'
   },
@@ -84,7 +84,7 @@ class UserList extends Component {
     return (
       <div style={ styles.roomSidebar }>
         <div style={ styles.header }>
-          Ex |> Chat
+          ex |> chat
         </div>
 
         <div style={ styles.listHeading }>

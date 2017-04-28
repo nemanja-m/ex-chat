@@ -18,3 +18,9 @@
   background: rgb(64,151,141);
   content: "";
 }
+
+.card {
+  max-width: 500px;
+  padding: 15rem 4rem;
+  margin: 5rem auto;
+}
