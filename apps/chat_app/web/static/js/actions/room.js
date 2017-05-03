@@ -50,11 +50,16 @@ export function connectToRoomChannel(userID) {
 
 export function createMessage(channel, payload) {
   return (dispatch, getState) => {
+
+    if (!payload.text) {
+      return;
+    }
+
+    const text = payload.text;
     const currentUser = getState().session.currentUser;
     const id = `${ (currentUser.id).toString(16) }:${ Date.now() }`;
-    const text = payload.text;
 
-    var messageType = "public";
+    var messageType = 'public';
     var message = {
       id,
       content: text,
@@ -63,14 +68,13 @@ export function createMessage(channel, payload) {
       receiver: null
     };
 
-
-    const tokens = text.split("|>");
+    const tokens = text.split('|>');
 
     if (tokens.length === 2) {
       message.content = tokens[0].trim();
       message.receiver = tokens[1].trim();
 
-      messageType = "private";
+      messageType = 'private';
     }
 
     channel
