@@ -15,14 +15,26 @@ class SignupForm extends Component {
 
           <hr />
 
-          <div className="form-group">
-            <label htmlFor="username">Username</label> &nbsp;
-            <Field name="username" component="input" type="text" />
-          </div>
+          <div className="row">
+            <div className="form-group col-md-6 col-md-offset-3">
+              <Field
+                name="username"
+                component="input"
+                type="text"
+                placeholder="Username"
+                className="form-control"
+              />
+            </div>
 
-          <div className="form-group">
-            <label htmlFor="password">Password</label> &nbsp;
-            <Field name="password" component="input" type="password"/>
+            <div className="form-group col-md-6 col-md-offset-3">
+              <Field
+                name="password"
+                component="input"
+                type="password"
+                placeholder="Password"
+                className="form-control"
+              />
+            </div>
           </div>
 
           <hr />
