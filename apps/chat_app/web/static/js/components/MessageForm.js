@@ -24,6 +24,7 @@ class MessageForm extends Component {
             type="text"
             component="input"
             className="form-control"
+            autoComplete="off"
             style={styles.input}
           />
           <div className="input-group-btn">
