@@ -125,9 +125,10 @@ defmodule ChatApp.ClusterHandler do
   defp notify_cluster(node = %{"alias" => aliaz, "address" => _addr}) do
     available_nodes_for(aliaz)
     |> Enum.reject(fn nod -> nod.alias == Config.alias() end)
-    |> Enum.each(fn %{alias: receiver, address: _addr} ->
-      publish_message(node, "REGISTER_NODE", receiver)
+    |> Enum.map(&Task.async fn ->
+      publish_message(node, "REGISTER_NODE", &1[:alias])
     end)
+    |> Enum.map(&Task.await/1)
   end
 
   defp available_nodes_for(aliaz) do
@@ -149,18 +150,20 @@ defmodule ChatApp.ClusterHandler do
   defp notify_cluster_for_new_user(user, true) do
     Cluster.nodes
     |> Enum.reject(fn node -> node.alias == Config.alias() end)
-    |> Enum.each(fn node ->
-      publish_message(%{data: user}, "ADD_USER", node.alias)
+    |> Enum.map(&Task.async fn ->
+      publish_message(%{data: user}, "ADD_USER", &1[:alias])
     end)
+    |> Enum.map(&Task.await/1)
   end
   defp notify_cluster_for_new_user(_, false), do: nil
 
   defp notify_cluster_for_removed_user(aliaz, id, true) do
     Cluster.nodes
     |> Enum.reject(fn node -> Config.alias() == node.alias end)
-    |> Enum.each(fn node ->
-      publish_message(%{alias: aliaz, id: id}, "REMOVE_USER", node.alias)
+    |> Enum.map(&Task.async fn ->
+      publish_message(%{alias: aliaz, id: id}, "REMOVE_USER", &1[:alias])
     end)
+    |> Enum.map(&Task.await/1)
   end
   defp notify_cluster_for_removed_user(_, _, false), do: nil
 

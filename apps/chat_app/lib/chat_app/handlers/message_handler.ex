@@ -3,8 +3,9 @@ defmodule ChatApp.MessageHandler do
   require Logger
 
   def send_public(message) do
-    nodes
-    |> Enum.each(fn node -> publish_message(node, message) end)
+    nodes()
+    |> Enum.map(&Task.async fn -> publish_message(&1, message) end)
+    |> Enum.map(&Task.await/1)
   end
 
   def send_private(message) do
@@ -12,14 +13,14 @@ defmodule ChatApp.MessageHandler do
       message["receiver"]
       |> Cluster.find_node
 
-      case node do
-        nil ->
-          Logger.error "#{message["receiver"]} not found."
+    case node do
+      nil ->
+        Logger.error "#{message["receiver"]} not found."
 
-        aliaz ->
-          publish_message(node, message)
-          Logger.warn "Sending message to #{message["receiver"]}@#{node}."
-      end
+      aliaz ->
+        publish_message(aliaz, message)
+        Logger.warn "Sending message to #{message["receiver"]}@#{node}."
+    end
   end
 
   defp nodes do
