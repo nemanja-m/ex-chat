@@ -2,13 +2,20 @@
 
 set -e
 
-dir="$(dirname "$0")"
-root="$(cd "$dir"; cd ..; pwd)"
-user_dir="$root/apps/user_app"
-chat_dir="$root/apps/chat_app"
+ROOT="$(cd "$(dirname $0)"; cd ..; pwd)"
+USER_DIR="$ROOT/apps/user_app"
+CHAT_DIR="$ROOT/apps/chat_app"
 
-cd "$user_dir"
-mix phoenix.server &>> ./dev.log &
+source "$ROOT/scripts/logger"
 
-cd "$chat_dir"
+log 'Configuring applications ...'
+
+cd "$USER_DIR"
 mix phoenix.server &>> ./dev.log &
+log 'User application started'
+
+cd "$CHAT_DIR"
+mix phoenix.server &>> ./dev.log &
+log 'Chat application started'
+
+log 'Run ./scripts/stop to stop servers'

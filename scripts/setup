@@ -2,36 +2,31 @@
 
 set -e
 
-GREEN='\033[0;32m'
-RED='\033[0;31m'
-RESET='\033[0m'
+ROOT="$(cd "$(dirname $0)"; cd ..; pwd)"
+USER_DIR="$ROOT/apps/user_app"
+CHAT_DIR="$ROOT/apps/chat_app"
 
-dir="$(dirname "$0")"
-root="$(cd "$dir"; cd ..; pwd)"
-user_dir="$root/apps/user_app"
-chat_dir="$root/apps/chat_app"
-
-print() { echo -e "\n${RED}==>${RESET} ${GREEN}$1${RESET}"; }
+source "$ROOT/scripts/logger"
 
 install_deps() {
-  print "Installing dependencies ..."
+  log 'Installing dependencies ...'
   mix local.rebar --force
   mix deps.get
 }
 
 compile_apps() {
-  print "Compiling apps ..."
+  log 'Compiling apps ...'
   mix compile
 }
 
 setup_user_app() {
-  print "Setting up User app ..."
-  cd "$user_dir" && mix ecto.setup && cd "$root"
+  log 'Setting up User app ...'
+  cd "$USER_DIR" && mix ecto.setup && cd "$ROOT"
 }
 
 setup_chat_app() {
-  print "Setting up Chat app ..."
-  cd "$chat_dir" && yarn && cd "$root"
+  log 'Setting up Chat app ...'
+  cd "$CHAT_DIR" && yarn && cd "$ROOT"
 }
 
 install_deps
@@ -39,4 +34,4 @@ compile_apps
 setup_user_app
 setup_chat_app
 
-print "Run ex-chat with ./script/run\n"
+log 'Run ex-chat with ./script/start'

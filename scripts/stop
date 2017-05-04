@@ -1,3 +1,8 @@
 #! /usr/bin/env bash
 
+ROOT="$(cd "$(dirname $0)"; cd ..; pwd)"
+
+source "$ROOT/scripts/logger"
+
 pkill -f 'mix phoenix.server'
+log 'Servers stopped'
