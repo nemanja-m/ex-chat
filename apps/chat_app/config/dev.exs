@@ -1,11 +1,5 @@
 use Mix.Config
 
-# For development, we disable any cache and enable
-# debugging and code reloading.
-#
-# The watchers configuration can be used to run external
-# watchers to your application. For example, we use it
-# with brunch.io to recompile .js and .css sources.
 config :chat_app, ChatApp.Endpoint,
   http: [port: System.get_env("PORT") || 4000],
   debug_errors: true,
