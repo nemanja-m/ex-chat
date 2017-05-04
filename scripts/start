@@ -1,0 +1,14 @@
+#! /usr/bin/env bash
+
+set -e
+
+dir="$(dirname "$0")"
+root="$(cd "$dir"; cd ..; pwd)"
+user_dir="$root/apps/user_app"
+chat_dir="$root/apps/chat_app"
+
+cd "$user_dir"
+mix phoenix.server &>> ./dev.log &
+
+cd "$chat_dir"
+mix phoenix.server &>> ./dev.log &
